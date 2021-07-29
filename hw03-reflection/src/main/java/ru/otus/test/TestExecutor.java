@@ -1,9 +1,11 @@
 package ru.otus.test;
 
-import ru.otus.test.Annotation.After;
-import ru.otus.test.Annotation.Before;
-import ru.otus.test.Annotation.Test;
+import ru.otus.test.annotation.After;
+import ru.otus.test.annotation.Before;
+import ru.otus.test.annotation.Test;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -13,63 +15,91 @@ import java.util.Map;
 import java.util.Set;
 
 public class TestExecutor {
-    private Set<Method> beforeMethods;
-    private Set<Method> afterMethods;
-    private HashMap<Method, String> testMethods; //key - method, value - result of executing.
+    private final Set<Method> beforeTestMethods = new HashSet<>();
+    private final Set<Method> afterTestMethods = new HashSet<>();
+    private final Set<Method> testMethods = new HashSet<>();
+    private final Map<String, String> testResults = new HashMap<>(); //key - method name, value - error description
 
-    public void execute(Class<?> clazz) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+    public void execute(Class<?> clazz) throws Exception {
+        fillTestMethods(clazz);
+        executeTestMethods(clazz);
 
-        beforeMethods = new HashSet<>();
-        afterMethods = new HashSet<>();
-        testMethods = new HashMap<>();
-
-        fillMethods(clazz);
-        executeMethods(clazz);
-        printResult();
+        System.out.println(getResultLog());
     }
 
-    private void fillMethods(Class<?> clazz) {
+    private void fillTestMethods(Class<?> clazz) {
         for (Method method : clazz.getDeclaredMethods()) {
             if (method.isAnnotationPresent(Before.class)) {
-                this.beforeMethods.add(method);
+                this.beforeTestMethods.add(method);
             } else if (method.isAnnotationPresent(After.class)) {
-                this.afterMethods.add(method);
+                this.afterTestMethods.add(method);
             } else if (method.isAnnotationPresent(Test.class)) {
-                this.testMethods.put(method, "");
+                this.testMethods.add(method);
             }
         }
     }
 
-    private void executeMethods(Class<?> clazz) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+    private void executeTestMethods(Class<?> clazz) throws Exception {
 
-        Constructor<?>[] constructors = clazz.getConstructors();
-        Object object = constructors[0].newInstance();
+        Constructor<?> constructor = clazz.getConstructor();
 
-        for (Map.Entry<Method, String> testMethod : this.testMethods.entrySet()) {
-            MethodTester methodTester = new MethodTester(object, testMethod.getKey(), this.beforeMethods, this.afterMethods);
-            testMethods.put(testMethod.getKey(), methodTester.execute());
+        for (Method testMethod : this.testMethods) {
+            Object object = constructor.newInstance();
+            String errorDescription = executeTestMethod(object, testMethod);
+            this.testResults.put(testMethod.getName(), errorDescription);
         }
     }
 
-    private void printResult() {
+    private String executeTestMethod(Object object, Method testMethod) {
+        try {
+            try {
+                executeMethods(object, this.beforeTestMethods);
+                testMethod.invoke(object);
+            } finally {
+                executeMethods(object, this.afterTestMethods);
+            }
+        } catch (Exception e) {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            return sw.toString();
+        }
+        return "";
+    }
+
+    private void executeMethods(Object object, Set<Method> methods) throws InvocationTargetException, IllegalAccessException {
+        for (Method method : methods) {
+            method.invoke(object);
+        }
+    }
+
+    private String getResultLog() {
+
         int countPassed = 0;
         int countFailed = 0;
-        StringBuilder sbErrors = new StringBuilder();
+        StringBuilder sbLog = new StringBuilder();
+        StringBuilder sbErrorDescription = new StringBuilder();
 
-        for (Map.Entry<Method, String> testMethod : this.testMethods.entrySet()) {
-            if (testMethod.getValue().isEmpty()) {
-                System.out.println(testMethod.getKey().getName() + " " + "PASSED");
+        for (Map.Entry<String, String> testResultEntry : this.testResults.entrySet()) {
+            if (testResultEntry.getValue().isEmpty()) {
                 countPassed++;
+                sbLog.append(testResultEntry.getKey()).append(" ").append("PASSED").append("\n");
             } else {
-                System.out.println(testMethod.getKey().getName() + " " + "FAILED");
                 countFailed++;
-                sbErrors.append(testMethod.getValue()).append("\n");
+                sbLog.append(testResultEntry.getKey()).append(" ").append("FAILED").append("\n");
+                sbErrorDescription.append(testResultEntry.getKey()).append(":").append("\n").
+                        append(testResultEntry.getValue()).append("\n");
             }
         }
 
-        System.out.println("Tested methods: " + testMethods.size() +
-                ", PASSED: " + countPassed + ", FAILED: " + countFailed + "\n");
-        System.out.println(sbErrors.toString());
+        sbLog.append("\n").append("Tested methods: ").append(this.testMethods.size()).
+                append(", PASSED: ").append(countPassed).
+                append(", FAILED: ").append(countFailed).append("\n");
+
+        sbLog.append("\n").append(sbErrorDescription);
+
+        return sbLog.toString();
+
     }
 
 }

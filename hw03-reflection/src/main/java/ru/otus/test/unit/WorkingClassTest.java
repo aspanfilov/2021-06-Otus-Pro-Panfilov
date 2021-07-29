@@ -1,8 +1,8 @@
 package ru.otus.test.unit;
 
-import ru.otus.test.Annotation.After;
-import ru.otus.test.Annotation.Before;
-import ru.otus.test.Annotation.Test;
+import ru.otus.test.annotation.After;
+import ru.otus.test.annotation.Before;
+import ru.otus.test.annotation.Test;
 
 public class WorkingClassTest {
 
@@ -16,16 +16,13 @@ public class WorkingClassTest {
 
     @Test
     public void methodTest1() throws Exception {
-        Exception e = new Exception("Ошибка ввода вывода");
-        throw e;
-//        System.out.println("run method Test 1");
+        System.out.println("run method Test 1");
     }
 
     @Test
     public void methodTest2() throws Exception {
         Exception e = new Exception("Ошибка ввода вывода");
         throw e;
-//        System.out.println("run method Test 2");
     }
 
     @After
