@@ -9,11 +9,11 @@ import java.util.Map;
 
 class MoneyStorageImplTest {
 
-    private MoneyStorageImpl moneyStorage;
+    private MoneyStorageOldImpl moneyStorage;
 
     @BeforeEach
     void setUp(){
-        moneyStorage = new MoneyStorageImpl();
+        moneyStorage = new MoneyStorageOldImpl();
     }
 
     @Test
