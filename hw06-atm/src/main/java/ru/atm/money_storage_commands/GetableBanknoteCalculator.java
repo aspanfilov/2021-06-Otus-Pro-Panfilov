@@ -1,4 +1,4 @@
 package ru.atm.money_storage_commands;
 
-public class BanknoteGetterCalculator {
+public class GetableBanknoteCalculator {
 }

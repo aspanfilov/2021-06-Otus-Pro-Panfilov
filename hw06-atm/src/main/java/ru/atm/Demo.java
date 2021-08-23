@@ -9,7 +9,8 @@ public class Demo {
         MoneyStorageImpl moneyStorage = new MoneyStorageImpl();
         MoneyStorageExecutor moneyStorageExecutor = new MoneyStorageExecutor(moneyStorage);
 
-        HashMap<Denomination, Long> banknotesToPut = new HashMap<>();
+//        HashMap<Denomination, Long> banknotesToPut = new HashMap<>();
+        banknoteToInput = new BanknoteInputter(Denomination.VAL_5000, 2);
         moneyStorageExecutor.addCommand(new BanknoteInputter());
 
         moneyStorageExecutor.executeCommands();

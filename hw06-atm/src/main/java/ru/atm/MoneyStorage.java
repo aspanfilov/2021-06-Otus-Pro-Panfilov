@@ -7,7 +7,7 @@ public interface MoneyStorage {
 
     SortedMap<Denomination, Long> getMoneyStorage();
 
-    SortedMap<Denomination, Long> getOperationBanknotes();
+    SortedMap<Denomination, Long> getGetableBanknotes();
 
     Map<Denomination, Long> getDenominationValues();
 

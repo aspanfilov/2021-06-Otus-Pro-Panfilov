@@ -7,7 +7,7 @@ import java.util.TreeMap;
 
 public class MoneyStorageImpl implements MoneyStorage{
     private final SortedMap<Denomination, Long> moneyStorage = new TreeMap<>();
-    private final SortedMap<Denomination, Long> operationBanknotes = new TreeMap<>();
+    private final SortedMap<Denomination, Long> getableBanknotes = new TreeMap<>();
     private final Map<Denomination, Long> denominationValues = new HashMap<>();
     private long total = 0;
 
@@ -24,7 +24,7 @@ public class MoneyStorageImpl implements MoneyStorage{
     }
 
     @Override
-    public SortedMap<Denomination, Long> getOperationBanknotes() {
+    public SortedMap<Denomination, Long> getGetableBanknotes() {
         return operationBanknotes;
     }
 
