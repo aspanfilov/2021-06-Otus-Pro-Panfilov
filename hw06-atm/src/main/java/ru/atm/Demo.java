@@ -10,8 +10,9 @@ public class Demo {
         MoneyStorageExecutor moneyStorageExecutor = new MoneyStorageExecutor(moneyStorage);
 
 //        HashMap<Denomination, Long> banknotesToPut = new HashMap<>();
-        banknoteToInput = new BanknoteInputter(Denomination.VAL_5000, 2);
-        moneyStorageExecutor.addCommand(new BanknoteInputter());
+        var banknoteInputter = new BanknoteInputter(Denomination.VAL_5000, 2);
+        banknoteInputter.add(Denomination.VAL_1000, 4);
+        moneyStorageExecutor.addCommand(banknoteInputter);
 
         moneyStorageExecutor.executeCommands();
     }

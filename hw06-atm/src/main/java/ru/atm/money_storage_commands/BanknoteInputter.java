@@ -3,34 +3,29 @@ package ru.atm.money_storage_commands;
 import ru.atm.Denomination;
 import ru.atm.MoneyStorage;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class BanknoteInputter implements Command{
-    private Denomination denomination;
-    private long amount;
+    private final Map<Denomination, Long> banknotes = new HashMap<>();
 
-    public BanknoteInputter(Denomination denomination, long amount) {
-        this.denomination = denomination;
-        this.amount = amount;
+    public BanknoteInputter(Denomination denomination, Long amount) {
+        this.add(denomination, amount);
     }
 
-    public BanknoteInputter setDenomination(Denomination denomination) {
-        this.denomination = denomination;
-        return this;
-    }
+    public void add(Denomination denomination, Long amount) {
+        if (amount <= 0L)
+            throw new IllegalArgumentException("attempt to put an amount equal to zero or less");
 
-    public BanknoteInputter setAmount(long amount) {
-        this.amount = amount;
-        return this;
+        Long currentAmount = Objects.requireNonNullElse(this.banknotes.get(denomination), 0L);
+        this.banknotes.put(denomination, currentAmount + amount);
     }
 
     @Override
     public void execute(MoneyStorage moneyStorage) {
-        if (count <= 0L) throw new IllegalArgumentException("attempt to put an amount equal to zero or less");
-
-        Long currentCount = Objects.requireNonNullElse(this.moneyStorage.get(denomination), 0L);
-        this.moneyStorage.put(denomination, currentCount + count);
-
-        this.total = this.total + count * this.denominationValues.get(denomination);
+        for (Map.Entry<Denomination, Long> banknoteEntry : banknotes.entrySet()) {
+            moneyStorage.putIntoBanknoteCells(banknoteEntry.getKey(), banknoteEntry.getValue());
+        }
     }
 }
