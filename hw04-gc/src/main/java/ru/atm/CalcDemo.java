@@ -1,4 +1,4 @@
-package ru.calculator;
+package ru.atm;
 
 
 /*
