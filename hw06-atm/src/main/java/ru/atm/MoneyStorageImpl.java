@@ -20,16 +20,26 @@ public class MoneyStorageImpl implements MoneyStorage{
         return new TreeMap<>(this.banknoteCells);
     }
     @Override
-    public void putIntoBanknoteCells(Denomination denomination, Long amount) {
-        Long currentAmount = Objects.requireNonNullElse(this.banknoteCells.get(denomination), 0L);
-        this.banknoteCells.put(denomination, currentAmount + amount);
+    public void putIntoBanknoteCells(Denomination denomination, Long count) {
+        Long currentCount = Objects.requireNonNullElse(this.banknoteCells.get(denomination), 0L);
+        this.total -= this.denominationValues.get(denomination) * currentCount;
+        this.total += this.denominationValues.get(denomination) * count;
 
-        this.total += this.denominationValues.get(denomination) * amount;
+        this.banknoteCells.put(denomination, count);
     }
 
     @Override
     public SortedMap<Denomination, Long> getGetableBanknotes() {
         return new TreeMap<>(this.getableBanknotes);
+    }
+    @Override
+    public void addIntoGetableBanknotes(Denomination denomination, Long count) {
+        Long currentCount = Objects.requireNonNullElse(this.getableBanknotes.get(denomination), 0L);
+        this.getableBanknotes.put(denomination, currentCount + count);
+    }
+    @Override
+    public void clearGetableBanknotes() {
+        this.getableBanknotes.clear();
     }
 
     @Override

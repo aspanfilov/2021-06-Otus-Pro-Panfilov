@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class BanknoteInputter implements Command{
+public class BanknoteInputter implements Command {
     private final Map<Denomination, Long> banknotes = new HashMap<>();
 
     public BanknoteInputter(Denomination denomination, Long amount) {
@@ -25,7 +25,10 @@ public class BanknoteInputter implements Command{
     @Override
     public void execute(MoneyStorage moneyStorage) {
         for (Map.Entry<Denomination, Long> banknoteEntry : banknotes.entrySet()) {
-            moneyStorage.putIntoBanknoteCells(banknoteEntry.getKey(), banknoteEntry.getValue());
+            Denomination denomination = banknoteEntry.getKey();
+            Long calculatedBanknoteCount =
+                    moneyStorage.getBanknoteCells().get(denomination) + banknoteEntry.getValue();
+            moneyStorage.putIntoBanknoteCells(denomination, calculatedBanknoteCount);
         }
     }
 }

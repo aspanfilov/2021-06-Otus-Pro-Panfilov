@@ -11,6 +11,10 @@ public interface MoneyStorage {
 
     SortedMap<Denomination, Long> getGetableBanknotes();
 
+    void addIntoGetableBanknotes(Denomination denomination, Long amount);
+
+    void clearGetableBanknotes();
+
     Map<Denomination, Long> getDenominationValues();
 
     long getTotal();
