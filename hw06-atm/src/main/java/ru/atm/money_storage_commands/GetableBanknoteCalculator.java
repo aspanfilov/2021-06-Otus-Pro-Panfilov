@@ -14,16 +14,16 @@ public class GetableBanknoteCalculator implements Command {
 
     @Override
     public void execute(MoneyStorage moneyStorage) {
-        if (this.amount > moneyStorage.getTotal())
+        if (this.amount > moneyStorage.getBalance())
             throw new IllegalArgumentException("insufficient funds");
 
         long currentAmount = amount;
 
-        for (Map.Entry banknoteCell : moneyStorage.getBanknoteCells().entrySet()) {
-            Denomination denomination = (Denomination) banknoteCell.getKey();
+        for (Map.Entry<Denomination, Long> banknoteCell : moneyStorage.getBanknoteCells().entrySet()) {
+            Denomination denomination = banknoteCell.getKey();
             long denominationValue = moneyStorage.getDenominationValues().get(denomination);
             if (denominationValue <= currentAmount) {
-                Long banknoteCount = Math.min(currentAmount / denominationValue, (Long) banknoteCell.getValue());
+                long banknoteCount = Math.min(currentAmount / denominationValue, banknoteCell.getValue());
                 if (banknoteCount == 0L)
                     continue;
                 moneyStorage.addIntoGetableBanknotes(denomination, banknoteCount);
