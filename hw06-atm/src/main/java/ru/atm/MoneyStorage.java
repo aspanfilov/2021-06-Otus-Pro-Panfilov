@@ -17,6 +17,6 @@ public interface MoneyStorage {
 
     Map<Denomination, Long> getDenominationValues();
 
-    long getTotal();
+    long getBalance();
 
 }

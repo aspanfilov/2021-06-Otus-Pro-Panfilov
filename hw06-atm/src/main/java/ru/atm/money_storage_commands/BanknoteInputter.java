@@ -3,14 +3,13 @@ package ru.atm.money_storage_commands;
 import ru.atm.Denomination;
 import ru.atm.MoneyStorage;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class BanknoteInputter implements Command {
-    private final Map<Denomination, Long> banknotes = new HashMap<>();
+    private final Map<Denomination, Long> banknotes;
 
     public BanknoteInputter(Denomination denomination, Long amount) {
+        this.banknotes = new TreeMap<>();
         this.add(denomination, amount);
     }
 
