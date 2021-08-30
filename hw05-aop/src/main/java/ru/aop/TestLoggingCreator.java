@@ -4,8 +4,8 @@ import ru.aop.annotation.Log;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 class TestLoggingCreator {
 
@@ -19,24 +19,32 @@ class TestLoggingCreator {
     static class TestLoggingInvocationHandler implements InvocationHandler {
         private final TestLogging testLogging;
         private final Class<?> testLoggingClazz;
-        private final Set<Method> loggedMethods;
+        private final Map<Method, Boolean> cachedLoggingUsage;
 
         TestLoggingInvocationHandler(TestLogging testLogging) {
             this.testLogging = testLogging;
             this.testLoggingClazz = testLogging.getClass();
-            loggedMethods = new HashSet<>();
+            cachedLoggingUsage = new HashMap<>();
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
-            if (this.loggedMethods.contains(method)) {
-                System.out.println(getMethodLog(method, args));
-            } else if (isAnnotationPresent(method, Log.class)) {
-                this.loggedMethods.add(method);
+            if (isLoggingUsed(method)) {
                 System.out.println(getMethodLog(method, args));
             }
+
             return method.invoke(testLogging, args);
+        }
+
+        private boolean isLoggingUsed(Method method) throws NoSuchMethodException {
+            Boolean loggingUsage = this.cachedLoggingUsage.get(method);
+
+            if (loggingUsage == null) {
+                loggingUsage = isAnnotationPresent(method, Log.class);
+                this.cachedLoggingUsage.put(method, loggingUsage);
+            }
+            return loggingUsage;
         }
 
         private boolean isAnnotationPresent(Method method, Class<? extends Annotation> annotationClazz) throws NoSuchMethodException {
