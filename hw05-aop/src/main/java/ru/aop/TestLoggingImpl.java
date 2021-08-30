@@ -4,7 +4,6 @@ import ru.aop.annotation.Log;
 
 public class TestLoggingImpl implements TestLogging{
 
-    @Log
     public void calculation(int param) {
         System.out.println("Calculation with 1 param");
     }
