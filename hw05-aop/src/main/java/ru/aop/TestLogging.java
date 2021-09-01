@@ -1,7 +1,5 @@
 package ru.aop;
 
-import ru.aop.annotation.Log;
-
 public interface TestLogging {
 
     void calculation(int param);

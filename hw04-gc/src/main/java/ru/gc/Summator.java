@@ -1,4 +1,4 @@
-package ru.atm;
+package ru.gc;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package ru.atm;
+package ru.gc;
 
 public class Data {
     private int value;
