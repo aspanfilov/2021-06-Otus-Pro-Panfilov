@@ -17,11 +17,8 @@ public class ProcessorAggregator implements Processor {
         Map<String, Double> groupedMeasurements = new HashMap<>();
         for (Measurement measurement : data) {
             var value = groupedMeasurements.get(measurement.getName());
-            if (value == null) {
-                groupedMeasurements.put(measurement.getName(), measurement.getValue());
-            } else {
-                groupedMeasurements.put(measurement.getName(), measurement.getValue() + value);
-            }
+            value = value == null ? 0 : value;
+            groupedMeasurements.put(measurement.getName(), measurement.getValue() + value);
         }
 
         return groupedMeasurements;

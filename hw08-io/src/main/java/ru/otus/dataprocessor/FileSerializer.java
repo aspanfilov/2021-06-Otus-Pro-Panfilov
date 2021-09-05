@@ -1,14 +1,12 @@
 package ru.otus.dataprocessor;
 
 import javax.json.Json;
-import javax.json.JsonArray;
 import javax.json.JsonObject;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
-import java.util.PrimitiveIterator;
 
 public class FileSerializer implements Serializer {
     private String fileName;
@@ -34,15 +32,17 @@ public class FileSerializer implements Serializer {
             jsonBuilder.add(entry.getKey().replace("\"", ""), entry.getValue());
         }
 
-        JsonObject jsonObject = jsonBuilder.build();
-
-        return jsonObject;
+        return jsonBuilder.build();
     }
 
     private void writeJson(JsonObject json) throws IOException {
 
         File newFile = new File(this.fileName);
         boolean created = newFile.createNewFile();
+
+        if (!created) {
+            throw new FileProcessException("Output file was not created");
+        }
 
         try (var bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(fileName))) {
             byte[] buffer = json.toString().getBytes();

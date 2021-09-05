@@ -18,21 +18,25 @@ public class FileLoader implements Loader {
     @Override
     public List<Measurement> load() {
         //читает файл, парсит и возвращает результат
-        JsonStructure jsonStructure = getJsonStructure();
-        List<Measurement> measurements = readJsonStructure(jsonStructure);
 
-        return measurements;
+        JsonStructure jsonStructure = getJsonStructure();
+        return readJsonStructure(jsonStructure);
     }
 
     private JsonStructure getJsonStructure() {
 
+        InputStream inputStream = FileLoader.class.getClassLoader().getResourceAsStream(this.fileName);
+        if (inputStream == null) {
+            throw new FileProcessException("Input file not found");
+        }
+
         JsonStructure jsonStructure;
 
-        try(var jsonReader = Json.createReader(FileLoader.class.getClassLoader().getResourceAsStream(this.fileName))) {
+        try (var jsonReader = Json.createReader(inputStream)) {
             jsonStructure = jsonReader.read();
         }
 
-        return  jsonStructure;
+        return jsonStructure;
     }
 
     private List<Measurement> readJsonStructure(JsonStructure jsonStructure) {
@@ -42,7 +46,7 @@ public class FileLoader implements Loader {
             measurements.add(readMeasurementFromJsonObject((JsonObject) jsonValue));
         }
 
-        return  measurements;
+        return measurements;
     }
 
     private Measurement readMeasurementFromJsonObject(JsonObject jsonObject) {
@@ -51,15 +55,14 @@ public class FileLoader implements Loader {
 
         for (Map.Entry<String, JsonValue> entry : jsonObject.entrySet()) {
             switch (entry.getKey()) {
-                case "name":
-                    jsName = (JsonString) entry.getValue();
-                    break;
-                case "value":
-                    jsValue = (JsonNumber) entry.getValue();
-                    break;
+                case "name" -> jsName = (JsonString) entry.getValue();
+                case "value" -> jsValue = (JsonNumber) entry.getValue();
             }
         }
 
+        if (jsName == null || jsValue == null) {
+            throw new FileProcessException("Incorrect data from input file");
+        }
         return new Measurement(jsName.toString(), jsValue.doubleValue());
     }
 }
