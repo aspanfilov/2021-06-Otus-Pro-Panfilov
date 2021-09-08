@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Map;
 
 public class FileSerializer implements Serializer {
-    private String fileName;
+    final private String fileName;
 
     public FileSerializer(String fileName) {
         this.fileName = fileName;
