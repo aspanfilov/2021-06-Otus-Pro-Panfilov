@@ -25,49 +25,49 @@ public class HomeWork {
 
     public static void main(String[] args) throws ClassNotFoundException {
 // Общая часть
-//        var dataSource = new DriverManagerDataSource(URL, USER, PASSWORD);
-//        flywayMigrations(dataSource);
-//        var transactionRunner = new TransactionRunnerJdbc(dataSource);
-//        var dbExecutor = new DbExecutorImpl();
+        var dataSource = new DriverManagerDataSource(URL, USER, PASSWORD);
+        flywayMigrations(dataSource);
+        var transactionRunner = new TransactionRunnerJdbc(dataSource);
+        var dbExecutor = new DbExecutorImpl();
 
 // Работа с клиентом
         EntityClassMetaData entityClassMetaDataClient = new EntityClassMetaDataImpl(clientName);
         EntitySQLMetaData entitySQLMetaDataClient = new EntitySQLMetaDataImpl();
-//        var dataTemplateClient = new DataTemplateJdbc<Client>(dbExecutor, entitySQLMetaDataClient); //реализация DataTemplate, универсальная
+        var dataTemplateClient = new DataTemplateJdbc<Client>(dbExecutor, entitySQLMetaDataClient); //реализация DataTemplate, универсальная
 
 // Код дальше должен остаться
-//        var dbServiceClient = new DbServiceClientImpl(transactionRunner, dataTemplateClient);
-//        dbServiceClient.saveClient(new Client("dbServiceFirst"));
-//
-//        var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
-//        var clientSecondSelected = dbServiceClient.getClient(clientSecond.getId())
-//                .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecond.getId()));
-//        log.info("clientSecondSelected:{}", clientSecondSelected);
-//
-//// Сделайте тоже самое с классом Manager (для него надо сделать свою таблицу)
-//
-//        EntityClassMetaData entityClassMetaDataManager; // = new EntityClassMetaDataImpl();
-//        EntitySQLMetaData entitySQLMetaDataManager = null; //= new EntitySQLMetaDataImpl();
-//        var dataTemplateManager = new DataTemplateJdbc<Manager>(dbExecutor, entitySQLMetaDataManager);
-//
-//        var dbServiceManager = new DbServiceManagerImpl(transactionRunner, dataTemplateManager);
-//        dbServiceManager.saveManager(new Manager("ManagerFirst"));
-//
-//        var managerSecond = dbServiceManager.saveManager(new Manager("ManagerSecond"));
-//        var managerSecondSelected = dbServiceManager.getManager(managerSecond.getNo())
-//                .orElseThrow(() -> new RuntimeException("Manager not found, id:" + managerSecond.getNo()));
-//        log.info("managerSecondSelected:{}", managerSecondSelected);
+        var dbServiceClient = new DbServiceClientImpl(transactionRunner, dataTemplateClient);
+        dbServiceClient.saveClient(new Client("dbServiceFirst"));
+
+        var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
+        var clientSecondSelected = dbServiceClient.getClient(clientSecond.getId())
+                .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecond.getId()));
+        log.info("clientSecondSelected:{}", clientSecondSelected);
+
+// Сделайте тоже самое с классом Manager (для него надо сделать свою таблицу)
+
+        EntityClassMetaData entityClassMetaDataManager; // = new EntityClassMetaDataImpl();
+        EntitySQLMetaData entitySQLMetaDataManager = null; //= new EntitySQLMetaDataImpl();
+        var dataTemplateManager = new DataTemplateJdbc<Manager>(dbExecutor, entitySQLMetaDataManager);
+
+        var dbServiceManager = new DbServiceManagerImpl(transactionRunner, dataTemplateManager);
+        dbServiceManager.saveManager(new Manager("ManagerFirst"));
+
+        var managerSecond = dbServiceManager.saveManager(new Manager("ManagerSecond"));
+        var managerSecondSelected = dbServiceManager.getManager(managerSecond.getNo())
+                .orElseThrow(() -> new RuntimeException("Manager not found, id:" + managerSecond.getNo()));
+        log.info("managerSecondSelected:{}", managerSecondSelected);
     }
-//
-//    private static void flywayMigrations(DataSource dataSource) {
-//        log.info("db migration started...");
-//        var flyway = Flyway.configure()
-//                .dataSource(dataSource)
-//                .locations("classpath:/db/migration")
-//                .load();
-//        flyway.migrate();
-//        log.info("db migration finished.");
-//        log.info("***");
-//    }
+
+    private static void flywayMigrations(DataSource dataSource) {
+        log.info("db migration started...");
+        var flyway = Flyway.configure()
+                .dataSource(dataSource)
+                .locations("classpath:/db/migration")
+                .load();
+        flyway.migrate();
+        log.info("db migration finished.");
+        log.info("***");
+    }
 
 }
