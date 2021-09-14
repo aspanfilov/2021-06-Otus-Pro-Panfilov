@@ -17,7 +17,7 @@ public class EntityClassMetaDataImpl implements EntityClassMetaData{
     }
 
     @Override
-    public <T> Constructor<T> getConstructor() {
+    public Constructor getConstructor() {
         return null;
     }
 
