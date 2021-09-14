@@ -11,6 +11,7 @@ import ru.otus.crm.model.Manager;
 import ru.otus.crm.service.DbServiceClientImpl;
 import ru.otus.crm.service.DbServiceManagerImpl;
 import ru.otus.jdbc.mapper.EntityClassMetaData;
+import ru.otus.jdbc.mapper.EntityClassMetaDataImpl;
 import ru.otus.jdbc.mapper.EntitySQLMetaData;
 import ru.otus.jdbc.mapper.DataTemplateJdbc;
 
@@ -21,9 +22,11 @@ public class HomeWork {
     private static final String USER = "usr";
     private static final String PASSWORD = "pwd";
 
+    private static final String clientName = "hw09-jdbc.src.main.java.ru.otus.crm.model.Client";
+
     private static final Logger log = LoggerFactory.getLogger(HomeWork.class);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException {
 // Общая часть
         var dataSource = new DriverManagerDataSource(URL, USER, PASSWORD);
         flywayMigrations(dataSource);
@@ -31,7 +34,7 @@ public class HomeWork {
         var dbExecutor = new DbExecutorImpl();
 
 // Работа с клиентом
-        EntityClassMetaData entityClassMetaDataClient; // = new EntityClassMetaDataImpl();
+        EntityClassMetaData entityClassMetaDataClient = new EntityClassMetaDataImpl(clientName);
         EntitySQLMetaData entitySQLMetaDataClient = null; //= new EntitySQLMetaDataImpl();
         var dataTemplateClient = new DataTemplateJdbc<Client>(dbExecutor, entitySQLMetaDataClient); //реализация DataTemplate, универсальная
 
