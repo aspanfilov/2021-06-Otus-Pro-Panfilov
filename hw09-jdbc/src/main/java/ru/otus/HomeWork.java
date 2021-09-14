@@ -10,10 +10,7 @@ import ru.otus.crm.model.Client;
 import ru.otus.crm.model.Manager;
 import ru.otus.crm.service.DbServiceClientImpl;
 import ru.otus.crm.service.DbServiceManagerImpl;
-import ru.otus.jdbc.mapper.EntityClassMetaData;
-import ru.otus.jdbc.mapper.EntityClassMetaDataImpl;
-import ru.otus.jdbc.mapper.EntitySQLMetaData;
-import ru.otus.jdbc.mapper.DataTemplateJdbc;
+import ru.otus.jdbc.mapper.*;
 
 import javax.sql.DataSource;
 
@@ -35,7 +32,7 @@ public class HomeWork {
 
 // Работа с клиентом
         EntityClassMetaData entityClassMetaDataClient = new EntityClassMetaDataImpl(clientName);
-        EntitySQLMetaData entitySQLMetaDataClient = null; //= new EntitySQLMetaDataImpl();
+        EntitySQLMetaData entitySQLMetaDataClient = new EntitySQLMetaDataImpl();
 //        var dataTemplateClient = new DataTemplateJdbc<Client>(dbExecutor, entitySQLMetaDataClient); //реализация DataTemplate, универсальная
 
 // Код дальше должен остаться
