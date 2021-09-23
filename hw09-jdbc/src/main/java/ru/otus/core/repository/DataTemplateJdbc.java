@@ -1,0 +1,126 @@
+package ru.otus.core.repository;
+
+import ru.otus.core.annotation.Id;
+import ru.otus.core.repository.DataTemplate;
+import ru.otus.core.repository.DataTemplateException;
+import ru.otus.core.repository.executor.DbExecutor;
+import ru.otus.jdbc.mapper.EntityClassMetaData;
+import ru.otus.jdbc.mapper.EntitySQLMetaData;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Сохратяет объект в базу, читает объект из базы
+ */
+public class DataTemplateJdbc<T> implements DataTemplate<T> {
+
+    private final DbExecutor dbExecutor;
+    private final EntitySQLMetaData entitySQL;
+
+    private final EntityClassMetaData<T> entityClass;
+
+    public DataTemplateJdbc(DbExecutor dbExecutor,
+                            EntitySQLMetaData entitySQL,
+                            EntityClassMetaData<T> entityClass) {
+        this.dbExecutor = dbExecutor;
+        this.entitySQL = entitySQL;
+        this.entityClass = entityClass;
+    }
+
+    @Override
+    public Optional<T> findById(Connection connection, long id) {
+        return dbExecutor.executeSelect(connection, this.entitySQL.getSelectByIdSql(), List.of(id), rs -> {
+            try {
+                if (rs.next()) {
+                    return createObject(rs);
+                }
+                return null;
+            } catch (SQLException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+                throw new DataTemplateException(e);
+            }
+        });
+    }
+
+    private T createObject(ResultSet rs) throws SQLException, IllegalAccessException, InvocationTargetException, InstantiationException {
+
+        T obj = this.entityClass.getConstructor().newInstance();
+
+        Field idField = this.entityClass.getIdField();
+        idField.setAccessible(true);
+        idField.set(obj, rs.getLong(idField.getName()));
+
+        for (Field field : this.entityClass.getFieldsWithoutId()) {
+            field.setAccessible(true);
+            field.set(obj, rs.getString(field.getName()));
+        }
+
+        return obj;
+    }
+
+    @Override
+    public List<T> findAll(Connection connection) {
+        return dbExecutor.executeSelect(connection, this.entitySQL.getSelectAllSql(), Collections.emptyList(), rs -> {
+            List<T> objList = new ArrayList<>();
+            try {
+                while (rs.next()) {
+                    objList.add(createObject(rs));
+                }
+                return objList;
+            } catch (SQLException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+                throw new DataTemplateException(e);
+            }
+        }).orElseThrow(() -> new RuntimeException("Unexpected error"));
+    }
+
+    @Override
+    public long insert(Connection connection, T obj) {
+        try {
+
+            List<Object> fieldValues = new ArrayList<>();
+
+            for (Field field : obj.getClass().getDeclaredFields()) {
+                if (field.isAnnotationPresent(Id.class)) {
+                    continue;
+                }
+                field.setAccessible(true);
+                fieldValues.add(field.get(obj));
+            }
+
+            return dbExecutor.executeStatement(connection, this.entitySQL.getInsertSql(), fieldValues);
+
+        } catch (Exception e) {
+            throw new DataTemplateException(e);
+        }
+    }
+
+    @Override
+    public void update(Connection connection, T obj) {
+        try {
+
+            List<Object> fieldValues = new ArrayList<>();
+            String idValue = null;
+
+            for (Field field : obj.getClass().getDeclaredFields()) {
+                if (field.isAnnotationPresent(Id.class)) {
+                    idValue = field.get(obj).toString();
+                }
+                field.setAccessible(true);
+                fieldValues.add(field.get(obj));
+            }
+            fieldValues.add(idValue);
+
+            dbExecutor.executeStatement(connection, this.entitySQL.getUpdateSql(), fieldValues);
+
+        } catch (Exception e) {
+            throw new DataTemplateException(e);
+        }
+    }
+}

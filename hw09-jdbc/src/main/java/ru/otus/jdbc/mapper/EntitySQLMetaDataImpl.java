@@ -1,33 +1,61 @@
 package ru.otus.jdbc.mapper;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
-public class EntitySQLMetaDataImpl implements EntitySQLMetaData{
-    private
+public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData{
+    private final EntityClassMetaData<T> entityClass;
 
-    @Override
-    public String getSelectAllSql(String tableName) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("select * from ").append(tableName);
-
-        return sb.toString();
+    public EntitySQLMetaDataImpl(EntityClassMetaData<T> entityClassMetaData) {
+        this.entityClass = entityClassMetaData;
     }
 
     @Override
-    public String getSelectByIdSql(String tableName, Field idField) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("select * from ").append(tableName)
-                .append(" where ").append(idField.getName())
-                .append(" = ")
+    public String getSelectAllSql() {
+        return "select * from " + this.entityClass.getName();
+    }
+
+    @Override
+    public String getSelectByIdSql() {
+        StringBuilder sbQuery = new StringBuilder();
+        sbQuery.append("select * from ").append(this.entityClass.getName())
+                .append(" where ").append(this.entityClass.getIdField().getName())
+                .append(" = ?");
+
+        return sbQuery.toString();
     }
 
     @Override
     public String getInsertSql() {
-        return null;
+        StringBuilder sbQuery = new StringBuilder();
+        StringBuilder sbVar = new StringBuilder();
+
+        sbQuery.append("insert into ").append(this.entityClass.getName()).append(" (");
+        for (Field field : this.entityClass.getFieldsWithoutId()) {
+            sbQuery.append(field.getName()).append(", ");
+            sbVar.append("?, ");
+        }
+        sbQuery.setLength(sbQuery.length()-2);
+        sbVar.setLength(sbVar.length()-2);
+
+        sbQuery.append(") values (").append(sbVar).append(")");
+
+        return sbQuery.toString();
     }
 
     @Override
     public String getUpdateSql() {
-        return null;
+        StringBuilder sbQuery = new StringBuilder();
+
+        sbQuery.append("update ").append(this.entityClass.getName()).append(" set ");
+        for (Field field : this.entityClass.getFieldsWithoutId()) {
+            sbQuery.append(field.getName()).append(" = ?, ");
+        }
+        sbQuery.setLength(sbQuery.length() - 2);
+
+        sbQuery.append(" where ").append(this.entityClass.getIdField().getName())
+                .append(" = ?");
+
+        return sbQuery.toString();
     }
 }

@@ -4,31 +4,37 @@ import ru.otus.core.annotation.Id;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
-public class EntityClassMetaDataImpl implements EntityClassMetaData{
-    private final Class<?> entityClazz;
+public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T>{
+    private final Class<T> clazz;
 
-    public EntityClassMetaDataImpl(String className) throws ClassNotFoundException {
-        this.entityClazz = Class.forName(className);
+    public EntityClassMetaDataImpl(Class<T> clazz){
+        this.clazz = clazz;
     }
 
     @Override
     public String getName() {
-        return entityClazz.getName();
+        return this.clazz.getName().substring(this.clazz.getName().lastIndexOf(".") + 1);
     }
 
     @Override
-    public Constructor getConstructor() {
-        Constructor<?> constructor = entityClazz.getConstructors()[0];
+    public Constructor<T> getConstructor() {
+        Constructor<T> constructor = null;
+        try {
+            constructor = this.clazz.getConstructor();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
         return constructor;
     }
+
 
     @Override
     public Field getIdField() {
         Field resultField = null;
-        for (Field field : entityClazz.getFields()) {
+        for (Field field : this.clazz.getDeclaredFields()) {
             if (field.isAnnotationPresent(Id.class)) {
                 resultField = field;
                 break;
@@ -39,12 +45,17 @@ public class EntityClassMetaDataImpl implements EntityClassMetaData{
 
     @Override
     public List<Field> getAllFields() {
-        return List.of(entityClazz.getFields());
+        return List.of(this.clazz.getDeclaredFields());
     }
 
     @Override
     public List<Field> getFieldsWithoutId() {
-        return (List<Field>) Arrays.stream(entityClazz.getFields()).
-                filter(field -> !field.isAnnotationPresent(Id.class));
+        List<Field> fieldsWithoutId = new ArrayList<>();
+        for (Field field : this.clazz.getDeclaredFields()) {
+            if (!field.isAnnotationPresent(Id.class)) {
+                fieldsWithoutId.add(field);
+            }
+        }
+        return fieldsWithoutId;
     }
 }
