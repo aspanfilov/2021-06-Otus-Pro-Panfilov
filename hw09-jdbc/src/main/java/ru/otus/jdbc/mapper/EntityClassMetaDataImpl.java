@@ -8,33 +8,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T>{
-    private final Class<T> clazz;
+    private final String name;
+    private final Constructor<T> constructor;
+    private final Field idField;
+    private final List<Field> allFields;
+    private final List<Field> fieldsWithoutId;
 
     public EntityClassMetaDataImpl(Class<T> clazz){
-        this.clazz = clazz;
+        this.name = getName(clazz);
+        this.constructor = getConstructor(clazz);
+        this.idField = getIdField(clazz);
+        this.allFields = getAllFields(clazz);
+        this.fieldsWithoutId = getFieldsWithoutId(clazz);
     }
 
-    @Override
-    public String getName() {
-        return this.clazz.getName().substring(this.clazz.getName().lastIndexOf(".") + 1);
+    private String getName(Class<T> clazz) {
+        return clazz.getName().substring(clazz.getName().lastIndexOf(".") + 1);
     }
 
-    @Override
-    public Constructor<T> getConstructor() {
+    private Constructor<T> getConstructor(Class<T> clazz) {
         Constructor<T> constructor = null;
         try {
-            constructor = this.clazz.getConstructor();
+            constructor = clazz.getConstructor();
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
         return constructor;
     }
 
-
-    @Override
-    public Field getIdField() {
+    private Field getIdField(Class<T> clazz) {
         Field resultField = null;
-        for (Field field : this.clazz.getDeclaredFields()) {
+        for (Field field : clazz.getDeclaredFields()) {
             if (field.isAnnotationPresent(Id.class)) {
                 resultField = field;
                 break;
@@ -43,19 +47,42 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T>{
         return resultField;
     }
 
-    @Override
-    public List<Field> getAllFields() {
-        return List.of(this.clazz.getDeclaredFields());
+    private List<Field> getAllFields(Class<T> clazz) {
+        return List.of(clazz.getDeclaredFields());
     }
 
-    @Override
-    public List<Field> getFieldsWithoutId() {
+    private List<Field> getFieldsWithoutId(Class<T> clazz) {
         List<Field> fieldsWithoutId = new ArrayList<>();
-        for (Field field : this.clazz.getDeclaredFields()) {
+        for (Field field : clazz.getDeclaredFields()) {
             if (!field.isAnnotationPresent(Id.class)) {
                 fieldsWithoutId.add(field);
             }
         }
+        return fieldsWithoutId;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public Constructor<T> getConstructor() {
+        return constructor;
+    }
+
+    @Override
+    public Field getIdField() {
+        return idField;
+    }
+
+    @Override
+    public List<Field> getAllFields() {
+        return allFields;
+    }
+
+    @Override
+    public List<Field> getFieldsWithoutId() {
         return fieldsWithoutId;
     }
 }
