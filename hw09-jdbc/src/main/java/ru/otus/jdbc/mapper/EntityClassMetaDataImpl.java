@@ -5,7 +5,9 @@ import ru.otus.core.annotation.Id;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T>{
     private final String name;
@@ -14,7 +16,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T>{
     private final List<Field> allFields;
     private final List<Field> fieldsWithoutId;
 
-    public EntityClassMetaDataImpl(Class<T> clazz){
+    public EntityClassMetaDataImpl(Class<T> clazz) throws NoSuchMethodException {
         this.name = getName(clazz);
         this.constructor = getConstructor(clazz);
         this.idField = getIdField(clazz);
@@ -23,28 +25,18 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T>{
     }
 
     private String getName(Class<T> clazz) {
-        return clazz.getName().substring(clazz.getName().lastIndexOf(".") + 1);
+        return clazz.getSimpleName();
     }
 
-    private Constructor<T> getConstructor(Class<T> clazz) {
-        Constructor<T> constructor = null;
-        try {
-            constructor = clazz.getConstructor();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-        return constructor;
+    private Constructor<T> getConstructor(Class<T> clazz) throws NoSuchMethodException {
+        return clazz.getConstructor();
     }
 
     private Field getIdField(Class<T> clazz) {
-        Field resultField = null;
-        for (Field field : clazz.getDeclaredFields()) {
-            if (field.isAnnotationPresent(Id.class)) {
-                resultField = field;
-                break;
-            }
-        }
-        return resultField;
+        return Arrays.stream(clazz.getDeclaredFields()).filter(e ->
+                e.isAnnotationPresent(Id.class))
+                .findFirst().orElseThrow();
+
     }
 
     private List<Field> getAllFields(Class<T> clazz) {
@@ -52,13 +44,9 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T>{
     }
 
     private List<Field> getFieldsWithoutId(Class<T> clazz) {
-        List<Field> fieldsWithoutId = new ArrayList<>();
-        for (Field field : clazz.getDeclaredFields()) {
-            if (!field.isAnnotationPresent(Id.class)) {
-                fieldsWithoutId.add(field);
-            }
-        }
-        return fieldsWithoutId;
+        return Arrays.stream(clazz.getDeclaredFields()).filter(e ->
+                !e.isAnnotationPresent(Id.class))
+                .collect(Collectors.toList());
     }
 
     @Override

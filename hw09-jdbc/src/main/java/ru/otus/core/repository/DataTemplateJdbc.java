@@ -12,10 +12,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Сохратяет объект в базу, читает объект из базы
@@ -43,23 +41,19 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                     return createObject(rs);
                 }
                 return null;
-            } catch (SQLException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            } catch (SQLException | InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
                 throw new DataTemplateException(e);
             }
         });
     }
 
-    private T createObject(ResultSet rs) throws SQLException, IllegalAccessException, InvocationTargetException, InstantiationException {
+    private T createObject(ResultSet rs) throws SQLException, IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
 
         T obj = this.entityClass.getConstructor().newInstance();
 
-        Field idField = this.entityClass.getIdField();
-        idField.setAccessible(true);
-        idField.set(obj, rs.getLong(idField.getName()));
-
-        for (Field field : this.entityClass.getFieldsWithoutId()) {
+        for (Field field : this.entityClass.getAllFields()) {
             field.setAccessible(true);
-            field.set(obj, rs.getString(field.getName()));
+            field.set(obj, rs.getObject(field.getName()));
         }
 
         return obj;
@@ -74,7 +68,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                     objList.add(createObject(rs));
                 }
                 return objList;
-            } catch (SQLException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            } catch (SQLException | InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
                 throw new DataTemplateException(e);
             }
         }).orElseThrow(() -> new RuntimeException("Unexpected error"));
@@ -87,11 +81,10 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
             List<Object> fieldValues = new ArrayList<>();
 
             for (Field field : obj.getClass().getDeclaredFields()) {
-                if (field.isAnnotationPresent(Id.class)) {
-                    continue;
+                if (!field.isAnnotationPresent(Id.class)) {
+                    field.setAccessible(true);
+                    fieldValues.add(field.get(obj));
                 }
-                field.setAccessible(true);
-                fieldValues.add(field.get(obj));
             }
 
             return dbExecutor.executeStatement(connection, this.entitySQL.getInsertSql(), fieldValues);
