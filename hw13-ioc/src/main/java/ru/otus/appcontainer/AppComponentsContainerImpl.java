@@ -19,11 +19,10 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     private void processConfig(Class<?> configClass) {
         checkConfigClass(configClass);
         // You code here...
-        for (Method method : configClass.getDeclaredMethods()) {
-            if (method.isAnnotationPresent(AppComponent.class)) {
-
-            }
-        }
+        Arrays.stream(configClass.getDeclaredMethods())
+                .filter(method -> method.isAnnotationPresent(AppComponent.class))
+                .sorted(Comparator.comparingInt(method -> method.getAnnotation(AppComponent.class).order()))
+                .forEach(method -> System.out.println(method.getAnnotation(AppComponent.class).name()));
     }
 
     private void checkConfigClass(Class<?> configClass) {
