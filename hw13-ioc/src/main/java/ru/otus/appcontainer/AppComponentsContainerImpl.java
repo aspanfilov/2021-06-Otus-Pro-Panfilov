@@ -1,8 +1,10 @@
 package ru.otus.appcontainer;
 
+import ru.otus.appcontainer.api.AppComponent;
 import ru.otus.appcontainer.api.AppComponentsContainer;
 import ru.otus.appcontainer.api.AppComponentsContainerConfig;
 
+import java.lang.reflect.Method;
 import java.util.*;
 
 public class AppComponentsContainerImpl implements AppComponentsContainer {
@@ -17,6 +19,11 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     private void processConfig(Class<?> configClass) {
         checkConfigClass(configClass);
         // You code here...
+        for (Method method : configClass.getDeclaredMethods()) {
+            if (method.isAnnotationPresent(AppComponent.class)) {
+
+            }
+        }
     }
 
     private void checkConfigClass(Class<?> configClass) {
