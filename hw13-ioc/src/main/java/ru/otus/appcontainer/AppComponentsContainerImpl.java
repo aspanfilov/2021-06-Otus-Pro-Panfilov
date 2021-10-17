@@ -9,35 +9,44 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.TypeVariable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AppComponentsContainerImpl implements AppComponentsContainer {
 
-    private final List<Object> appComponents = new ArrayList<>();
+//    private final List<Object> appComponents = new ArrayList<>();
     private final Map<String, Object> appComponentsByName = new HashMap<>();
+    private final Map<String, Object> appComponentsByTypeName = new HashMap<>();
 
-    public AppComponentsContainerImpl(Class<?> initialConfigClass) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+    public AppComponentsContainerImpl(Class<?> initialConfigClass) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
         processConfig(initialConfigClass);
     }
 
-    private void processConfig(Class<?> configClass) throws IllegalAccessException, InvocationTargetException, InstantiationException {
+    private void processConfig(Class<?> configClass) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
         checkConfigClass(configClass);
         // You code here...
-        var obj = configClass.getConstructors()[0].newInstance();
 
-        Arrays.stream(configClass.getDeclaredMethods())
+        Object obj = configClass.getConstructor().newInstance();
+
+        List<Method> methods = Arrays.stream(configClass.getDeclaredMethods())
                 .filter(method -> method.isAnnotationPresent(AppComponent.class))
                 .sorted(Comparator.comparingInt(method -> method.getAnnotation(AppComponent.class).order()))
-                .forEach(method -> {
-                    var a = method.getParameterTypes();
-                    var b = method.getTypeParameters();
-//                    method.invoke(obj, getAppComponents);
-                    System.out.println(method.getName());
-                    //По классам (типам) параметров метода найти соответствующие другие методы
-                    //  и взять у них имя из аннотации, чтобы по имени получить объект
-                    method.getParameterTypes()[0].getSimpleName(); //Массив классов параметров передать в процедуру и получить массив объектов значений из мапы
-                    System.out.println(method.getParameters());
-                    getAppComponents(method.getParameters());
-                });
+                .collect(Collectors.toList());
+
+        for (Method method : methods) {
+            Object component = method.invoke(obj, getComponentsByTypes(method.getParameterTypes()));
+            this.appComponentsByName.put(method.getAnnotation(AppComponent.class).name(), component);
+            this.appComponentsByTypeName.put(method.getReturnType().getSimpleName(), component);
+        }
+    }
+
+    private Object[] getComponentsByTypes(Class<?>[] parameterTypes) {
+        Object[] components = new Object[parameterTypes.length];
+
+        for (int i = 0; i < parameterTypes.length; i++) {
+            components[i] = this.appComponentsByTypeName.get(parameterTypes[i].getSimpleName());
+        }
+
+        return components;
     }
 
     private void checkConfigClass(Class<?> configClass) {
@@ -46,24 +55,13 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         }
     }
 
-    private Object[] getAppComponents(Parameter[] parameters) {
-
-        Object[] result = new Object[parameters.length];
-
-        for (int i = 0; i < parameters.length; i++) {
-            result[i] = this.appComponentsByName.get(parameters[i].getName());
-        }
-        return result;
-
-    }
-
     @Override
     public <C> C getAppComponent(Class<C> componentClass) {
-        return null;
+        return (C) this.appComponentsByTypeName.get(componentClass.getSimpleName());
     }
 
     @Override
     public <C> C getAppComponent(String componentName) {
-        return null;
+        return (C) this.appComponentsByName.get(componentName);
     }
 }
