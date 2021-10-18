@@ -46,13 +46,9 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     }
 
     private Object[] getComponentsByTypes(Class<?>[] parameterTypes) {
-        Object[] components = new Object[parameterTypes.length];
-
-        for (int i = 0; i < parameterTypes.length; i++) {
-            components[i] = this.appComponentsByName.get(parameterTypes[i].getSimpleName());
-        }
-
-        return components;
+        return Arrays.stream(parameterTypes).map(parameterType ->
+                this.appComponentsByName.get(parameterType.getSimpleName()))
+                .toArray();
     }
 
     private void checkConfigClass(Class<?> configClass) {
