@@ -1,5 +1,6 @@
 package ru.otus.appcontainer;
 
+import com.sun.jdi.InterfaceType;
 import ru.otus.appcontainer.api.AppComponent;
 import ru.otus.appcontainer.api.AppComponentsContainer;
 import ru.otus.appcontainer.api.AppComponentsContainerConfig;
@@ -7,7 +8,6 @@ import ru.otus.appcontainer.api.AppComponentsContainerConfig;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.lang.reflect.TypeVariable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -15,13 +15,12 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
 //    private final List<Object> appComponents = new ArrayList<>();
     private final Map<String, Object> appComponentsByName = new HashMap<>();
-    private final Map<String, Object> appComponentsByTypeName = new HashMap<>();
 
     public AppComponentsContainerImpl(Class<?> initialConfigClass) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
         processConfig(initialConfigClass);
     }
 
-    private void processConfig(Class<?> configClass) throws IllegalAccessException, InvocationTargetException, InstantiationException, NoSuchMethodException {
+    private void processConfig(Class<?> configClass) throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         checkConfigClass(configClass);
         // You code here...
 
@@ -34,8 +33,17 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
         for (Method method : methods) {
             Object component = method.invoke(obj, getComponentsByTypes(method.getParameterTypes()));
+
             this.appComponentsByName.put(method.getAnnotation(AppComponent.class).name(), component);
-            this.appComponentsByTypeName.put(method.getReturnType().getSimpleName(), component);
+            this.appComponentsByName.put(component.getClass().getSimpleName(), component);
+            this.appComponentsByName.put(method.getReturnType().getSimpleName(), component);
+
+            if (!method.getReturnType().isInterface()) {
+                for (Class<?> interfaceType : method.getReturnType().getInterfaces()) {
+                    this.appComponentsByName.put(interfaceType.getSimpleName(), component);
+                }
+            }
+
         }
     }
 
@@ -43,7 +51,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         Object[] components = new Object[parameterTypes.length];
 
         for (int i = 0; i < parameterTypes.length; i++) {
-            components[i] = this.appComponentsByTypeName.get(parameterTypes[i].getSimpleName());
+            components[i] = this.appComponentsByName.get(parameterTypes[i].getSimpleName());
         }
 
         return components;
@@ -57,7 +65,8 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
     @Override
     public <C> C getAppComponent(Class<C> componentClass) {
-        return (C) this.appComponentsByTypeName.get(componentClass.getSimpleName());
+//        if (componentClass.in)
+        return (C) this.appComponentsByName.get(componentClass.getSimpleName());
     }
 
     @Override

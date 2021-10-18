@@ -5,6 +5,9 @@ import ru.otus.appcontainer.api.AppComponentsContainerConfig;
 import ru.otus.services.*;
 
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 @AppComponentsContainerConfig(order = 1)
@@ -21,7 +24,7 @@ public class AppConfig {
     }
 
     @AppComponent(order = 2, name = "gameProcessor")
-    public GameProcessor gameProcessor(IOService ioService,
+    public GameProcessorImpl gameProcessor(IOService ioService,
                                        PlayerService playerService,
                                        EquationPreparer equationPreparer) {
         return new GameProcessorImpl(ioService, equationPreparer, playerService);
