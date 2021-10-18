@@ -1,13 +1,11 @@
 package ru.otus.appcontainer;
 
-import com.sun.jdi.InterfaceType;
 import ru.otus.appcontainer.api.AppComponent;
 import ru.otus.appcontainer.api.AppComponentsContainer;
 import ru.otus.appcontainer.api.AppComponentsContainerConfig;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -65,7 +63,6 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
     @Override
     public <C> C getAppComponent(Class<C> componentClass) {
-//        if (componentClass.in)
         return (C) this.appComponentsByName.get(componentClass.getSimpleName());
     }
 
