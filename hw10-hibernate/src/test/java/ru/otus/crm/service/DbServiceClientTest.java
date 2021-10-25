@@ -13,6 +13,7 @@ class DbServiceClientTest extends AbstractHibernateTest {
     @Test
     @DisplayName(" корректно сохранять, изменять и загружать клиента")
     void shouldCorrectSaveClient() {
+        System.out.println("Привет");
         //given
         var client = new Client("Ivan");
 
