@@ -1,6 +1,9 @@
 package ru.otus.crm.model;
 
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +20,13 @@ public class Client implements Cloneable {
     @Column(name = "name")
     private String name;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true) // , orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true) // , orphanRemoval = true)
     @JoinColumn(name = "client_id")
-    private List<Phone> phones;
+    private List<Phone> phones = new ArrayList<>();
 
     public Client() {
     }
@@ -31,13 +34,18 @@ public class Client implements Cloneable {
     public Client(String name) {
         this.id = null;
         this.name = name;
-        this.phones = new ArrayList<>();
+    }
+
+    public Client(String name, Address address, List<Phone> phones) {
+        this.id = null;
+        this.name = name;
+        this.address = address;
+        this.phones = phones;
     }
 
     public Client(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.phones = new ArrayList<>();
     }
 
     public Client(Long id, String name, Address address, List<Phone> phones) {
