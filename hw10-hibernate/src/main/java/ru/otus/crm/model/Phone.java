@@ -14,6 +14,10 @@ public class Phone {
     @Column(name = "number", nullable = false, unique = true)
     private String number;
 
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id")
+    private Client client;
+
     public Phone() {
     }
 

@@ -1,12 +1,6 @@
 package ru.otus.crm.model;
 
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "client")
@@ -20,13 +14,10 @@ public class Client implements Cloneable {
     @Column(name = "name")
     private String name;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true) // , orphanRemoval = true)
-    @JoinColumn(name = "client_id")
-    private List<Phone> phones = new ArrayList<>();
 
     public Client() {
     }
@@ -36,11 +27,10 @@ public class Client implements Cloneable {
         this.name = name;
     }
 
-    public Client(String name, Address address, List<Phone> phones) {
+    public Client(String name, Address address) {
         this.id = null;
         this.name = name;
         this.address = address;
-        this.phones = phones;
     }
 
     public Client(Long id, String name) {
@@ -48,16 +38,15 @@ public class Client implements Cloneable {
         this.name = name;
     }
 
-    public Client(Long id, String name, Address address, List<Phone> phones) {
+    public Client(Long id, String name, Address address) {
         this.id = id;
         this.name = name;
         this.address = address;
-        this.phones = phones;
     }
 
     @Override
     public Client clone() {
-        return new Client(this.id, this.name, this.address, this.phones);
+        return new Client(this.id, this.name, this.address);
     }
 
     public Long getId() {
@@ -82,14 +71,6 @@ public class Client implements Cloneable {
 
     public void setAddress(Address address) {
         this.address = address;
-    }
-
-    public List<Phone> getPhones() {
-        return phones;
-    }
-
-    public void setPhones(List<Phone> phones) {
-        this.phones = phones;
     }
 
     @Override

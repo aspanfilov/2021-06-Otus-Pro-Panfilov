@@ -12,6 +12,7 @@ import ru.otus.crm.model.Client;
 import ru.otus.crm.model.Phone;
 import ru.otus.crm.service.DbServiceClientImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DbServiceDemo {
@@ -37,7 +38,7 @@ public class DbServiceDemo {
         var clientTemplate = new DataTemplateHibernate<>(Client.class);
 ///
         var dbServiceClient = new DbServiceClientImpl(transactionManager, clientTemplate);
-        dbServiceClient.saveClient(new Client("dbServiceFirst"));
+        dbServiceClient.saveClient(new Client("dbServiceFirst", new Address("Russia")));
 
         var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
         var clientSecondSelected = dbServiceClient.getClient(clientSecond.getId())
