@@ -38,7 +38,7 @@ public class DbServiceDemo {
         var clientTemplate = new DataTemplateHibernate<>(Client.class);
 ///
         var dbServiceClient = new DbServiceClientImpl(transactionManager, clientTemplate);
-        dbServiceClient.saveClient(new Client("dbServiceFirst", new Address("Russia")));
+        dbServiceClient.saveClient(new Client("dbServiceFirst", new Address("Russia"), List.of(new Phone("123"))));
 
         var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
         var clientSecondSelected = dbServiceClient.getClient(clientSecond.getId())
