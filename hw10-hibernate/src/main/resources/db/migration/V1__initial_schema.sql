@@ -21,12 +21,6 @@ create table phone (
     client_id bigint
 );
 
---alter table address
---    add constraint UK_fx5oeyyotqc1jurjbmt9pwgjq unique (country);
-
---alter table phone
---    add constraint UK_jpobbsduo00bgyro8gurj7for unique (number);
-
 alter table client
     add constraint FKb137u2cl2ec0otae32lk5pcl2
     foreign key (address_id)

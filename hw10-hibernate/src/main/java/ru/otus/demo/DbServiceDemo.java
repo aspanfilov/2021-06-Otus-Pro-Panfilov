@@ -12,7 +12,6 @@ import ru.otus.crm.model.Client;
 import ru.otus.crm.model.Phone;
 import ru.otus.crm.service.DbServiceClientImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DbServiceDemo {
@@ -38,17 +37,22 @@ public class DbServiceDemo {
         var clientTemplate = new DataTemplateHibernate<>(Client.class);
 ///
         var dbServiceClient = new DbServiceClientImpl(transactionManager, clientTemplate);
-        var a = dbServiceClient.saveClient(new Client("dbServiceFirst", new Address("Russia"), List.of(new Phone("123"))));
 
-//        var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
-//        var clientSecondSelected = dbServiceClient.getClient(clientSecond.getId())
-//                .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecond.getId()));
-//        log.info("clientSecondSelected:{}", clientSecondSelected);
-/////
-//        dbServiceClient.saveClient(new Client(clientSecondSelected.getId(), "dbServiceSecondUpdated"));
-//        var clientUpdated = dbServiceClient.getClient(clientSecondSelected.getId())
-//                .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecondSelected.getId()));
-//        log.info("clientUpdated:{}", clientUpdated);
+        Client clientFirst = new Client("dbServiceFirst", new Address("Russia"));
+        var listPnones = List.of(new Phone("123", clientFirst));
+        clientFirst.setPhones(listPnones);
+
+        dbServiceClient.saveClient(clientFirst);
+
+        var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
+        var clientSecondSelected = dbServiceClient.getClient(clientSecond.getId())
+                .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecond.getId()));
+        log.info("clientSecondSelected:{}", clientSecondSelected);
+///
+        dbServiceClient.saveClient(new Client(clientSecondSelected.getId(), "dbServiceSecondUpdated"));
+        var clientUpdated = dbServiceClient.getClient(clientSecondSelected.getId())
+                .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecondSelected.getId()));
+        log.info("clientUpdated:{}", clientUpdated);
 
         log.info("All clients");
         dbServiceClient.findAll().forEach(client -> log.info("client:{}", client));

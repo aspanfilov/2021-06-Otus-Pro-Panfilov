@@ -11,7 +11,7 @@ public class Address {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "country", nullable = false) //, unique = true)
+    @Column(name = "country", nullable = false)
     private String country;
 
     @Column(name = "region")
