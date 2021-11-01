@@ -5,6 +5,7 @@ import org.hibernate.engine.internal.Cascade;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "client")
@@ -39,28 +40,28 @@ public class Client implements Cloneable {
         this.address = address;
     }
 
-    public Client(String name, Address address, List<Phone> phones) {
-        this.id = null;
-        this.name = name;
-        this.address = address;
-        this.phones = phones;
-    }
-
     public Client(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Client(Long id, String name, Address address, List<Phone> phones) {
+    public Client(Long id, String name, Address address) {
         this.id = id;
         this.name = name;
         this.address = address;
-        this.phones = phones;
     }
 
     @Override
     public Client clone() {
-        return new Client(this.id, this.name, this.address, this.phones);
+        var clientCloned = new Client(this.id, this.name, this.address);
+        var phonesCloned =
+                this.phones.stream().map(phone -> {
+                    var phoneCloned = phone.clone();
+                    phoneCloned.setClient(clientCloned);
+                    return phoneCloned;
+                }).collect(Collectors.toList());
+        clientCloned.setPhones(phonesCloned);
+        return clientCloned;
     }
 
     public Long getId() {
