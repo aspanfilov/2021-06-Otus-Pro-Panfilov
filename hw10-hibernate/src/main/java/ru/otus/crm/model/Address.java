@@ -4,7 +4,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "address")
-public class Address {
+public class Address implements Cloneable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,6 +42,24 @@ public class Address {
 
     public Address(String country) {
         this.country = country;
+    }
+
+    @Override
+    public Address clone() {
+        var addressCloned = new Address(this.id, new String(this.country));
+        if (this.getRegion() != null) {
+            addressCloned.setRegion(new String(this.getRegion()));
+        }
+        if (this.getCity() != null) {
+            addressCloned.setCity(new String(this.getCity()));
+        }
+        if (this.getStreet() != null) {
+            addressCloned.setStreet(new String(this.getStreet()));
+        }
+        addressCloned.setHouseNumber(this.getHouseNumber());
+        addressCloned.setBuildingNumber(this.getBuildingNumber());
+        addressCloned.setApartmentNumber(this.getApartmentNumber());
+        return addressCloned;
     }
 
     public long getId() {

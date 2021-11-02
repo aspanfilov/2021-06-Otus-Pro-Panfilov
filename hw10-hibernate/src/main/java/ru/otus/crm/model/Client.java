@@ -53,14 +53,22 @@ public class Client implements Cloneable {
 
     @Override
     public Client clone() {
-        var clientCloned = new Client(this.id, this.name, this.address);
-        var phonesCloned =
-                this.phones.stream().map(phone -> {
-                    var phoneCloned = phone.clone();
-                    phoneCloned.setClient(clientCloned);
-                    return phoneCloned;
-                }).collect(Collectors.toList());
-        clientCloned.setPhones(phonesCloned);
+        var clientCloned = new Client(this.id, new String(this.name));
+
+        if (this.address != null) {
+            clientCloned.setAddress(this.address.clone());
+        }
+
+        if (this.phones != null) {
+            var phonesCloned =
+                    this.phones.stream().map(phone -> {
+                        var phoneCloned = phone.clone();
+                        phoneCloned.setClient(clientCloned);
+                        return phoneCloned;
+                    }).collect(Collectors.toList());
+            clientCloned.setPhones(phonesCloned);
+        }
+
         return clientCloned;
     }
 

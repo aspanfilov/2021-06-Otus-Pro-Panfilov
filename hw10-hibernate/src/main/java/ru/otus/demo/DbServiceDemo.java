@@ -42,7 +42,7 @@ public class DbServiceDemo {
         var listPnones = List.of(new Phone("123", clientFirst));
         clientFirst.setPhones(listPnones);
 
-        dbServiceClient.saveClient(clientFirst);
+        var a = dbServiceClient.saveClient(clientFirst);
 
         var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
         var clientSecondSelected = dbServiceClient.getClient(clientSecond.getId())
