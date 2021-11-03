@@ -45,6 +45,15 @@ public class Client implements Cloneable {
         this.name = name;
     }
 
+    public Client(String name, Address address, List<Phone> phones) {
+        this.id = null;
+        this.name = name;
+        this.address = address;
+
+        phones.forEach(phone -> phone.setClient(this));
+        this.phones = phones;
+    }
+
     public Client(Long id, String name, Address address) {
         this.id = id;
         this.name = name;
@@ -53,7 +62,7 @@ public class Client implements Cloneable {
 
     @Override
     public Client clone() {
-        var clientCloned = new Client(this.id, new String(this.name));
+        var clientCloned = new Client(this.id, this.name);
 
         if (this.address != null) {
             clientCloned.setAddress(this.address.clone());
