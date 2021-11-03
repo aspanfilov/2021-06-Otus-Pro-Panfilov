@@ -9,3 +9,5 @@ include 'ho06-atm'
 include 'ho08-io'
 
 include 'hw10-hibernate'
+
+include 'hw15-multithreading'
