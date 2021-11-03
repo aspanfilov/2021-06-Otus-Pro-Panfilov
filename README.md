@@ -1,3 +1,3 @@
-Студент:
-Arthur Panfilov (Артур Панфилов)
-mrpanfilov@gmail.com
+Панфилов Артур Сергеевич
+Студент OTUS
+email: mrpanfilov@gmail.com
