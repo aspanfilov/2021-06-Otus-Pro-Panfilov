@@ -10,4 +10,7 @@ include 'ho08-io'
 
 include 'hw10-hibernate'
 
+include 'hw12-webserver'
+
+
 include 'hw15-multithreading'
