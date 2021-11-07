@@ -35,18 +35,20 @@ public class Address implements Cloneable{
     public Address() {
     }
 
-    public Address(long id, String country) {
+    public Address(long id, String country, int houseNumber) {
         this.id = id;
         this.country = country;
+        this.houseNumber = houseNumber;
     }
 
-    public Address(String country) {
+    public Address(String country, int houseNumber) {
         this.country = country;
+        this.houseNumber = houseNumber;
     }
 
     @Override
     public Address clone() {
-        var addressCloned = new Address(this.id, this.country);
+        var addressCloned = new Address(this.id, this.country, this.houseNumber);
         if (this.getRegion() != null) {
             addressCloned.setRegion(this.getRegion());
         }
@@ -56,7 +58,6 @@ public class Address implements Cloneable{
         if (this.getStreet() != null) {
             addressCloned.setStreet(this.getStreet());
         }
-        addressCloned.setHouseNumber(this.getHouseNumber());
         addressCloned.setBuildingNumber(this.getBuildingNumber());
         addressCloned.setApartmentNumber(this.getApartmentNumber());
         return addressCloned;

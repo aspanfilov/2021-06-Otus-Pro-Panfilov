@@ -46,7 +46,7 @@ public class DbServiceDemo {
         dbServiceClient.saveClient(
                 new Client(
                         "dbServiceFirst",
-                        new Address("Russia"),
+                        new Address("Russia", 1),
                         List.of(new Phone("123"))));
 
         var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
