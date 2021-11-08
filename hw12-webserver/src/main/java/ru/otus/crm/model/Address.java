@@ -14,9 +14,6 @@ public class Address implements Cloneable{
     @Column(name = "country", nullable = false)
     private String country;
 
-    @Column(name = "region")
-    private String region;
-
     @Column(name = "city")
     private String city;
 
@@ -46,12 +43,23 @@ public class Address implements Cloneable{
         this.houseNumber = houseNumber;
     }
 
+    public Address(String country,
+                   String city,
+                   String street,
+                   int house_number,
+                   int building_number,
+                   int apartment_number) {
+        this.country = country;
+        this.city = city;
+        this.street = street;
+        this.houseNumber = house_number;
+        this.buildingNumber = building_number;
+        this.apartmentNumber = apartment_number;
+    }
+
     @Override
     public Address clone() {
         var addressCloned = new Address(this.id, this.country, this.houseNumber);
-        if (this.getRegion() != null) {
-            addressCloned.setRegion(this.getRegion());
-        }
         if (this.getCity() != null) {
             addressCloned.setCity(this.getCity());
         }
@@ -77,14 +85,6 @@ public class Address implements Cloneable{
 
     public void setCountry(String country) {
         this.country = country;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
     }
 
     public String getCity() {
@@ -132,7 +132,6 @@ public class Address implements Cloneable{
         return "Address{" +
                 "id=" + id +
                 ", country='" + country + '\'' +
-                ", region='" + region + '\'' +
                 ", city='" + city + '\'' +
                 ", street='" + street + '\'' +
                 ", houseNumber=" + houseNumber +

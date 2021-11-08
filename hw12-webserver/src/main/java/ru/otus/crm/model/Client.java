@@ -99,7 +99,6 @@ public class Client implements Cloneable {
 
     public String getAddress() {
         return (this.address.getCountry() == null ? "" : this.address.getCountry() + ", ") +
-                (this.address.getRegion() == null ? "" : this.address.getRegion() + ", ") +
                 (this.address.getCity() == null ? "" : this.address.getCity() + ", ") +
                 (this.address.getStreet() == null ? "" : this.address.getStreet() + ", ") +
                 (this.address.getHouseNumber() == 0 ? "" : this.address.getHouseNumber()) +

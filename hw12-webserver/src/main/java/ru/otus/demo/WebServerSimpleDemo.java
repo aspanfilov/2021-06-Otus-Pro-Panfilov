@@ -54,17 +54,16 @@ public class WebServerSimpleDemo {
 
         var templateProcessor = new TemplateProcessorImpl(TEMPLATES_DIR);
 
-        var adr = new Address("Russia", 1);
-        var phones = List.of(new Phone("123-12-12"), new Phone("222-22-22"));
-
-        var client = dbServiceClient.saveClient(
+        dbServiceClient.saveClient(
                 new Client(
                         "dbServiceFirst",
-                        adr,
-                        phones));
-        System.out.println(client.getAddress());
-        System.out.println(client.getPhones());
-
+                        new Address("Russia", 1),
+                        List.of(new Phone("123-12-12"), new Phone("222-22-22"))));
+        dbServiceClient.saveClient(
+                new Client(
+                        "dbServiceSecond",
+                        new Address("Russia", 2),
+                        List.of(new Phone("111-11-11"))));
 
         var clientsWebServer = new ClientsWebServerSimple(
                 WEB_SERVER_PORT, dbServiceClient, templateProcessor);
