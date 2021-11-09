@@ -11,8 +11,11 @@ import ru.otus.crm.model.Address;
 import ru.otus.crm.model.Client;
 import ru.otus.crm.model.Phone;
 import ru.otus.crm.service.DbServiceClientImpl;
+import ru.otus.web.dao.InMemoryUserDao;
 import ru.otus.web.server.ClientsWebServerSimple;
 import ru.otus.web.service.TemplateProcessorImpl;
+import ru.otus.web.service.UserAuthService;
+import ru.otus.web.service.UserAuthServiceImpl;
 
 import java.util.List;
 
@@ -54,6 +57,9 @@ public class WebServerSimpleDemo {
 
         var templateProcessor = new TemplateProcessorImpl(TEMPLATES_DIR);
 
+        var userDao = new InMemoryUserDao();
+        var authService = new UserAuthServiceImpl(userDao);
+
         dbServiceClient.saveClient(
                 new Client(
                         "dbServiceFirst",
@@ -66,7 +72,7 @@ public class WebServerSimpleDemo {
                         List.of(new Phone("111-11-11"))));
 
         var clientsWebServer = new ClientsWebServerSimple(
-                WEB_SERVER_PORT, dbServiceClient, templateProcessor);
+                WEB_SERVER_PORT, authService, dbServiceClient, templateProcessor);
 
         clientsWebServer.start();
         clientsWebServer.join();
