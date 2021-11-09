@@ -14,7 +14,6 @@ import ru.otus.crm.service.DbServiceClientImpl;
 import ru.otus.web.dao.InMemoryUserDao;
 import ru.otus.web.server.ClientsWebServerSimple;
 import ru.otus.web.service.TemplateProcessorImpl;
-import ru.otus.web.service.UserAuthService;
 import ru.otus.web.service.UserAuthServiceImpl;
 
 import java.util.List;
@@ -31,12 +30,12 @@ import java.util.List;
     // REST сервис
     http://localhost:8080/api/user/3
 */
-public class WebServerSimpleDemo {
+public class WebServerDemo {
     private static final int WEB_SERVER_PORT = 8080;
     private static final String TEMPLATES_DIR = "/templates/";
     private static final String HIBERNATE_CFG_FILE = "hibernate.cfg.xml";
 
-    private static final Logger log = LoggerFactory.getLogger(WebServerSimpleDemo.class);
+    private static final Logger log = LoggerFactory.getLogger(WebServerDemo.class);
 
     public static void main(String[] args) throws Exception {
 //        UserDao userDao = new InMemoryUserDao();
