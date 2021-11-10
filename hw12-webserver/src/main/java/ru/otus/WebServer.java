@@ -1,8 +1,6 @@
-package ru.otus.demo;
+package ru.otus;
 
 import org.hibernate.cfg.Configuration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.otus.core.repository.DataTemplateHibernate;
 import ru.otus.core.repository.HibernateUtils;
 import ru.otus.core.sessionmanager.TransactionManagerHibernate;
@@ -16,29 +14,12 @@ import ru.otus.web.server.ClientsWebServerSimple;
 import ru.otus.web.service.TemplateProcessorImpl;
 import ru.otus.web.service.UserAuthServiceImpl;
 
-import java.util.List;
-
-/*
-    Полезные для демо ссылки
-
-    // Стартовая страница
-    http://localhost:8080
-
-    // Страница пользователей
-    http://localhost:8080/users
-
-    // REST сервис
-    http://localhost:8080/api/user/3
-*/
-public class WebServerDemo {
+public class WebServer {
     private static final int WEB_SERVER_PORT = 8080;
     private static final String TEMPLATES_DIR = "/templates/";
     private static final String HIBERNATE_CFG_FILE = "hibernate.cfg.xml";
 
-    private static final Logger log = LoggerFactory.getLogger(WebServerDemo.class);
-
     public static void main(String[] args) throws Exception {
-//        UserDao userDao = new InMemoryUserDao();
         var configuration = new Configuration().configure(HIBERNATE_CFG_FILE);
 
         var dbUrl = configuration.getProperty("hibernate.connection.url");
@@ -46,6 +27,9 @@ public class WebServerDemo {
         var dbPassword = configuration.getProperty("hibernate.connection.password");
 
         new MigrationsExecutorFlyway(dbUrl, dbUserName, dbPassword).executeMigrations();
+
+        var userDao = new InMemoryUserDao();
+        var authService = new UserAuthServiceImpl(userDao);
 
         var sessionFactory = HibernateUtils.buildSessionFactory(configuration,
                 Client.class, Address.class, Phone.class);
@@ -55,20 +39,6 @@ public class WebServerDemo {
         var dbServiceClient = new DbServiceClientImpl(transactionManager, clientTemplate);
 
         var templateProcessor = new TemplateProcessorImpl(TEMPLATES_DIR);
-
-        var userDao = new InMemoryUserDao();
-        var authService = new UserAuthServiceImpl(userDao);
-
-        dbServiceClient.saveClient(
-                new Client(
-                        "dbServiceFirst",
-                        new Address("Russia", 1),
-                        List.of(new Phone("123-12-12"), new Phone("222-22-22"))));
-        dbServiceClient.saveClient(
-                new Client(
-                        "dbServiceSecond",
-                        new Address("Russia", 2),
-                        List.of(new Phone("111-11-11"))));
 
         var clientsWebServer = new ClientsWebServerSimple(
                 WEB_SERVER_PORT, authService, dbServiceClient, templateProcessor);

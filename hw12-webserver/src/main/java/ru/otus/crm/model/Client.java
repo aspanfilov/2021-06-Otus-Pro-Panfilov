@@ -1,7 +1,5 @@
 package ru.otus.crm.model;
 
-import org.hibernate.engine.internal.Cascade;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -97,26 +95,16 @@ public class Client implements Cloneable {
         this.name = name;
     }
 
-    public String getAddress() {
-        return (this.address.getCountry() == null ? "" : this.address.getCountry() + ", ") +
-                (this.address.getCity() == null ? "" : this.address.getCity() + ", ") +
-                (this.address.getStreet() == null ? "" : this.address.getStreet() + ", ") +
-                (this.address.getHouseNumber() == 0 ? "" : this.address.getHouseNumber()) +
-                (this.address.getBuildingNumber() == 0 ? "" : "-" + this.address.getBuildingNumber()) +
-                (this.address.getApartmentNumber() == 0 ? "" : "-" + this.address.getApartmentNumber());
+    public Address getAddress() {
+        return address;
     }
 
     public void setAddress(Address address) {
         this.address = address;
     }
 
-    public String getPhones() {
-        String phoneNumbers = "";
-        for (int i = 0; i < this.phones.size(); i++) {
-            phoneNumbers = phoneNumbers + phones.get(i).getNumber() +
-                    (i == this.phones.size() - 1 ? "" : ", ");
-        }
-        return phoneNumbers;
+    public List<Phone> getPhones() {
+        return phones;
     }
 
     public void setPhones(List<Phone> phones) {

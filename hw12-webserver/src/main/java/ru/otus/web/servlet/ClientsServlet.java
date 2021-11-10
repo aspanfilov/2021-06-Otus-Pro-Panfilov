@@ -7,12 +7,14 @@ import ru.otus.crm.model.Address;
 import ru.otus.crm.model.Client;
 import ru.otus.crm.model.Phone;
 import ru.otus.crm.service.DBServiceClient;
+import ru.otus.web.dto.ClientDto;
 import ru.otus.web.service.TemplateProcessor;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class ClientsServlet extends HttpServlet {
@@ -49,8 +51,12 @@ public class ClientsServlet extends HttpServlet {
     }
 
     private void refreshClientTable(HttpServletResponse response) throws IOException {
+
+        List<Client> clientList = this.dbServiceClient.findAll();
+        List<ClientDto> clientDtoList = clientList.stream().map(ClientDto::new).collect(Collectors.toList());
+
         Map<String, Object> paramsMap = new HashMap<>();
-        paramsMap.put(TEMPLATE_ATTR_ALL_CLIENTS, this.dbServiceClient.findAll());
+        paramsMap.put(TEMPLATE_ATTR_ALL_CLIENTS, clientDtoList);
 
         response.setContentType("text/html");
         response.getWriter().println(templateProcessor.getPage(CLIENTS_PAGE_TEMPLATE, paramsMap));
