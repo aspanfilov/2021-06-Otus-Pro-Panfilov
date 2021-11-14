@@ -8,5 +8,8 @@ include 'hw06-atm'
 include 'hw08-io'
 include 'hw09-jdbc'
 include 'hw10-hibernate'
+include 'hw11-cache'
+include 'hw12-webserver'
 include 'hw13-ioc'
+include 'hw15-multithreading'
 
