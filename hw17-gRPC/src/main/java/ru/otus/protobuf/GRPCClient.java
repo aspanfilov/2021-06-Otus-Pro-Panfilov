@@ -8,19 +8,22 @@ import ru.otus.protobuf.generated.RequestMessage;
 import ru.otus.protobuf.generated.ResponseMessage;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class GRPCClient {
 
     private static final String SERVER_HOST = "localhost";
     private static final int SERVER_PORT = 8191;
     private static final long FIRST_VALUE_FROM_SERVER = 1;
-    private static final long LAST_VALUE_FROM_SERVER = 3;
-    private static final int FIRST_VALUE_ON_CLIENT = 0;
-    private static final int LAST_VALUE_ON_CLIENT = 10;
+    private static final long LAST_VALUE_FROM_SERVER = 10;
+    private static final int COUNT = 50;
 
-    private static long curValFromServer = 0;
-    private static int curValOnClient = 0;
-    private static boolean curValFromServerHandled = false;
+    private static long valueFromServer = 0;
+    private static long valueOnClient = 0;
+    private static boolean valueFromServerProcessed = false;
+
+    private static Lock lock = new ReentrantLock();
 
     public static void main(String[] args) throws InterruptedException {
         ManagedChannel channel = ManagedChannelBuilder.forAddress(SERVER_HOST, SERVER_PORT)
@@ -39,8 +42,11 @@ public class GRPCClient {
                 new StreamObserver<ResponseMessage>() {
                     @Override
                     public void onNext(ResponseMessage respMsg) {
-                        curValFromServer = respMsg.getCurrentValue();
-                        System.out.printf("Server msg: %d\n", curValFromServer);
+                        lock.lock();
+                        valueFromServer = respMsg.getCurrentValue();
+                        valueFromServerProcessed = false;
+                        System.out.printf("Server msg: %d\n", valueFromServer);
+                        lock.unlock();
                     }
 
                     @Override
@@ -55,13 +61,22 @@ public class GRPCClient {
                     }
                 });
 
-        for (int i = FIRST_VALUE_ON_CLIENT; i < LAST_VALUE_ON_CLIENT; i++) {
-            System.out.println("step " + i );
+        for (int i = 0; i < COUNT; i++) {
+            lock.lock();
+
+            valueOnClient++;
+            if (!valueFromServerProcessed) {
+                valueOnClient += valueFromServer;
+                valueFromServerProcessed = true;
+            }
+            System.out.printf("currentValue: %d\n", valueOnClient );
+
+            lock.unlock();
+            Thread.sleep(1000);
         }
 
         latch.await();
 
         channel.shutdown();
-
     }
 }
