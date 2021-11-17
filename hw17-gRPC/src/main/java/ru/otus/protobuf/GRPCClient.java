@@ -21,9 +21,8 @@ public class GRPCClient {
 
     private static long valueFromServer = 0;
     private static long valueOnClient = 0;
-    private static boolean valueFromServerProcessed = false;
 
-    private static Lock lock = new ReentrantLock();
+    private static final Lock lock = new ReentrantLock();
 
     public static void main(String[] args) throws InterruptedException {
         ManagedChannel channel = ManagedChannelBuilder.forAddress(SERVER_HOST, SERVER_PORT)
@@ -44,9 +43,9 @@ public class GRPCClient {
                     public void onNext(ResponseMessage respMsg) {
                         lock.lock();
                         valueFromServer = respMsg.getCurrentValue();
-                        valueFromServerProcessed = false;
-                        System.out.printf("Server msg: %d\n", valueFromServer);
                         lock.unlock();
+
+                        System.out.printf("Server msg: %d\n", valueFromServer);
                     }
 
                     @Override
@@ -62,16 +61,15 @@ public class GRPCClient {
                 });
 
         for (int i = 0; i < COUNT; i++) {
-            lock.lock();
 
             valueOnClient++;
-            if (!valueFromServerProcessed) {
-                valueOnClient += valueFromServer;
-                valueFromServerProcessed = true;
-            }
-            System.out.printf("currentValue: %d\n", valueOnClient );
 
+            lock.lock();
+            valueOnClient += valueFromServer;
+            valueFromServer = 0;
             lock.unlock();
+
+            System.out.printf("currentValue: %d\n", valueOnClient );
             Thread.sleep(1000);
         }
 
