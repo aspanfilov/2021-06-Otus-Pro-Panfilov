@@ -1,4 +1,4 @@
-package ru.otus.domain;
+package ru.otus.crm.model;
 
 import javax.persistence.*;
 import java.util.ArrayList;

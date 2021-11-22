@@ -2,7 +2,7 @@ package ru.otus.services;
 
 
 import org.springframework.stereotype.Service;
-import ru.otus.domain.Client;
+import ru.otus.crm.model.Client;
 import ru.otus.repository.ClientRepository;
 
 import java.util.List;
