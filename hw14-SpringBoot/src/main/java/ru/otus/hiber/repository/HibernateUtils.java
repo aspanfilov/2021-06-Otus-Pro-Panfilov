@@ -6,9 +6,11 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
+@Component
 public final class HibernateUtils {
 
     private HibernateUtils() {

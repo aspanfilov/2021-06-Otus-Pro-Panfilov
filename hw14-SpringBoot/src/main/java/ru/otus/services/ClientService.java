@@ -1,6 +1,6 @@
 package ru.otus.services;
 
-import ch.qos.logback.core.net.server.Client;
+import ru.otus.domain.Client;
 
 import java.util.List;
 import java.util.Optional;

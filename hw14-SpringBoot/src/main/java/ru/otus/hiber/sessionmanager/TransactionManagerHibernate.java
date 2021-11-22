@@ -1,8 +1,11 @@
 package ru.otus.hiber.sessionmanager;
 
 import org.hibernate.SessionFactory;
+import org.springframework.stereotype.Component;
+
 import java.util.concurrent.Callable;
 
+@Component
 public class TransactionManagerHibernate implements TransactionManager {
     private final SessionFactory sessionFactory;
 

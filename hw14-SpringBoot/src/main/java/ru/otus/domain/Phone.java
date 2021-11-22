@@ -1,7 +1,5 @@
 package ru.otus.domain;
 
-import ru.otus.crm.model.Client;
-
 import javax.persistence.*;
 
 @Entity
