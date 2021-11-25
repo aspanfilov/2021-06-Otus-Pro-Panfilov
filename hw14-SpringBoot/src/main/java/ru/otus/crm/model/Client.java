@@ -22,30 +22,12 @@ public class Client {
     @Nonnull
     private Address address;
 
-    @MappedCollection(idColumn = "phone_id")
+    @MappedCollection(idColumn = "client_id")
     private List<Phone> phones = new ArrayList<>();
-
-    public Client(String name) {
-        this.id = null;
-        this.name = name;
-    }
-
-    public Client(String name, Address address) {
-        this.id = null;
-        this.name = name;
-        this.address = address;
-    }
-
-    public Client(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 
     public Client(String name, Address address, List<Phone> phones) {
         this.name = name;
         this.address = address;
-
-        phones.forEach(phone -> phone.setClient(this));
         this.phones = phones;
     }
 

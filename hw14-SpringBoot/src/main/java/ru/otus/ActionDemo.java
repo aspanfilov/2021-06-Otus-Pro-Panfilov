@@ -11,6 +11,7 @@ import ru.otus.crm.service.DBServiceClient;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Component("actionDemo")
 public class ActionDemo {
@@ -27,12 +28,12 @@ public class ActionDemo {
     }
 
     void action() {
-//        log.info(">>> client creation");
-//        dbServiceClient.saveClient(
-//                new Client(
-//                        "dbServiceFirst",
-//                        new Address("Russia", 2),
-//                        new ArrayList<>(Collections.singleton(new Phone("123")))));
+        log.info(">>> client creation");
+        dbServiceClient.saveClient(
+                new Client(
+                        "dbServiceFirst",
+                        new Address("Russia", 2),
+                        List.of(new Phone("123"))));
 
 //        var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
 //        var clientSecondSelected = dbServiceClient.getClient(clientSecond.getId())

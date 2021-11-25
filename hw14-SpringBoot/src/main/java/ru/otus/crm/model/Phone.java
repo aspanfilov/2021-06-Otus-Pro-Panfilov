@@ -17,22 +17,18 @@ public class Phone{
     private String number;
 
     @Nonnull
-    private Client client;
+    private final int clientId;
 
     public Phone(String number) {
         this.number = number;
-    }
-
-    public Phone(String number, Client client) {
-        this.number = number;
-        this.client = client;
+        this.clientId = 0;
     }
 
     @PersistenceConstructor
-    public Phone(long id, String number, Client client) {
+    public Phone(long id, String number, int clientId) {
         this.id = id;
         this.number = number;
-        this.client = client;
+        this.clientId = clientId;
     }
 
     public long getId() {
@@ -51,12 +47,8 @@ public class Phone{
         this.number = number;
     }
 
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
+    public int getClientId() {
+        return clientId;
     }
 
     @Override
