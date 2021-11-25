@@ -1,31 +1,30 @@
 package ru.otus.crm.model;
 
-import javax.persistence.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.relational.core.mapping.MappedCollection;
+import org.springframework.data.relational.core.mapping.Table;
+
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Entity
-@Table(name = "client")
-public class Client implements Cloneable {
+@Table("client")
+public class Client {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Nonnull
     private Long id;
 
-    @Column(name = "name")
+    @Nonnull
     private String name;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    @JoinColumn(name = "address_id")
+    @Nonnull
     private Address address;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "client")
+    @MappedCollection(idColumn = "phone_id")
     private List<Phone> phones = new ArrayList<>();
-
-    public Client() {
-    }
 
     public Client(String name) {
         this.id = null;
@@ -44,7 +43,6 @@ public class Client implements Cloneable {
     }
 
     public Client(String name, Address address, List<Phone> phones) {
-        this.id = null;
         this.name = name;
         this.address = address;
 
@@ -52,31 +50,10 @@ public class Client implements Cloneable {
         this.phones = phones;
     }
 
-    public Client(Long id, String name, Address address) {
+    @PersistenceConstructor
+    public Client(Long id, String name, Address address, List<Phone> phones) {
+        this(name, address, phones);
         this.id = id;
-        this.name = name;
-        this.address = address;
-    }
-
-    @Override
-    public Client clone() {
-        var clientCloned = new Client(this.id, this.name);
-
-        if (this.address != null) {
-            clientCloned.setAddress(this.address.clone());
-        }
-
-        if (this.phones != null) {
-            var phonesCloned =
-                    this.phones.stream().map(phone -> {
-                        var phoneCloned = phone.clone();
-                        phoneCloned.setClient(clientCloned);
-                        return phoneCloned;
-                    }).collect(Collectors.toList());
-            clientCloned.setPhones(phonesCloned);
-        }
-
-        return clientCloned;
     }
 
     public Long getId() {

@@ -3,8 +3,9 @@ package ru.otus.crm.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import ru.otus.sessionmanager.TransactionManager;
+import ru.otus.crm.model.Client;
 import ru.otus.crm.repository.ClientRepository;
+import ru.otus.sessionmanager.TransactionManager;
 
 import java.util.ArrayList;
 import java.util.List;

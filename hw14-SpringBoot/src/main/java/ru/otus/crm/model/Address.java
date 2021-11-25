@@ -1,36 +1,32 @@
 package ru.otus.crm.model;
 
-import javax.persistence.*;
 
-@Entity
-@Table(name = "address")
-public class Address implements Cloneable{
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.relational.core.mapping.Table;
+
+import javax.annotation.Nonnull;
+
+@Table("address")
+public class Address {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private long id;
 
-    @Column(name = "country", nullable = false)
+    @Nonnull
     private String country;
 
-    @Column(name = "city")
     private String city;
 
-    @Column(name = "street")
     private String street;
 
-    @Column(name = "house_number")
+    @Nonnull
     private int houseNumber;
 
-    @Column(name = "building_number")
     private int buildingNumber;
 
-    @Column(name = "apartment_number")
     private int apartmentNumber;
 
-    public Address() {
-    }
 
     public Address(long id, String country, int houseNumber) {
         this.id = id;
@@ -43,32 +39,21 @@ public class Address implements Cloneable{
         this.houseNumber = houseNumber;
     }
 
-    public Address(String country,
+    @PersistenceConstructor
+    public Address(Long id,
+                   String country,
                    String city,
                    String street,
                    int house_number,
                    int building_number,
                    int apartment_number) {
+        this.id = id;
         this.country = country;
         this.city = city;
         this.street = street;
         this.houseNumber = house_number;
         this.buildingNumber = building_number;
         this.apartmentNumber = apartment_number;
-    }
-
-    @Override
-    public Address clone() {
-        var addressCloned = new Address(this.id, this.country, this.houseNumber);
-        if (this.getCity() != null) {
-            addressCloned.setCity(this.getCity());
-        }
-        if (this.getStreet() != null) {
-            addressCloned.setStreet(this.getStreet());
-        }
-        addressCloned.setBuildingNumber(this.getBuildingNumber());
-        addressCloned.setApartmentNumber(this.getApartmentNumber());
-        return addressCloned;
     }
 
     public long getId() {

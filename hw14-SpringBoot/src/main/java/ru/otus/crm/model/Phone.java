@@ -1,25 +1,23 @@
 package ru.otus.crm.model;
 
-import javax.persistence.*;
 
-@Entity
-@Table(name = "phone")
-public class Phone implements Cloneable{
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.relational.core.mapping.Table;
+
+import javax.annotation.Nonnull;
+
+@Table("phone")
+public class Phone{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private long id;
 
-    @Column(name = "number", nullable = false)
+    @Nonnull
     private String number;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id")
+    @Nonnull
     private Client client;
-
-    public Phone() {
-    }
 
     public Phone(String number) {
         this.number = number;
@@ -30,14 +28,11 @@ public class Phone implements Cloneable{
         this.client = client;
     }
 
+    @PersistenceConstructor
     public Phone(long id, String number, Client client) {
         this.id = id;
         this.number = number;
         this.client = client;
-    }
-
-    public Phone clone() {
-        return new Phone(this.id, this.number, this.client);
     }
 
     public long getId() {
