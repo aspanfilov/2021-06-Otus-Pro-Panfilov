@@ -8,7 +8,6 @@ import org.springframework.data.relational.core.mapping.Table;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Table("client")
 public class Client {
