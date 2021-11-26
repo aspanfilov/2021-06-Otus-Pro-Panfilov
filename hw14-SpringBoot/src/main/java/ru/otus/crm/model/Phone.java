@@ -11,21 +11,20 @@ import javax.annotation.Nonnull;
 public class Phone{
 
     @Id
-    private long id;
+    private Long id;
 
     @Nonnull
     private String number;
 
     @Nonnull
-    private final int clientId;
+    private Long clientId;
 
     public Phone(String number) {
         this.number = number;
-        this.clientId = 0;
     }
 
     @PersistenceConstructor
-    public Phone(long id, String number, int clientId) {
+    public Phone(Long id, String number, Long clientId) {
         this.id = id;
         this.number = number;
         this.clientId = clientId;
@@ -47,7 +46,7 @@ public class Phone{
         this.number = number;
     }
 
-    public int getClientId() {
+    public Long getClientId() {
         return clientId;
     }
 

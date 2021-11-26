@@ -23,18 +23,22 @@ public class Client {
     private Address address;
 
     @MappedCollection(idColumn = "client_id")
-    private List<Phone> phones = new ArrayList<>();
+    private List<Phone> phones;
+
+    public Client(String name, Address address) {
+        this(null, name, address, null);
+    }
 
     public Client(String name, Address address, List<Phone> phones) {
-        this.name = name;
-        this.address = address;
-        this.phones = phones;
+        this(null, name, address, phones);
     }
 
     @PersistenceConstructor
     public Client(Long id, String name, Address address, List<Phone> phones) {
-        this(name, address, phones);
         this.id = id;
+        this.name = name;
+        this.address = address;
+        this.phones = phones;
     }
 
     public Long getId() {

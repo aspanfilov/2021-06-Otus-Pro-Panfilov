@@ -11,7 +11,9 @@ import javax.annotation.Nonnull;
 public class Address {
 
     @Id
-    private long id;
+    private Long id;
+
+//    private Long clientId;
 
     @Nonnull
     private String country;
@@ -26,13 +28,6 @@ public class Address {
     private int buildingNumber;
 
     private int apartmentNumber;
-
-
-    public Address(long id, String country, int houseNumber) {
-        this.id = id;
-        this.country = country;
-        this.houseNumber = houseNumber;
-    }
 
     public Address(String country, int houseNumber) {
         this.country = country;

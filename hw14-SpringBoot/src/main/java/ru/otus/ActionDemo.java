@@ -7,11 +7,11 @@ import ru.otus.crm.model.Address;
 import ru.otus.crm.model.Client;
 import ru.otus.crm.model.Phone;
 import ru.otus.crm.repository.ClientRepository;
+import ru.otus.crm.service.DBServiceAddress;
+import ru.otus.crm.service.DBServiceAddressImpl;
 import ru.otus.crm.service.DBServiceClient;
+import ru.otus.crm.service.DBServicePhone;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Component("actionDemo")
 public class ActionDemo {
@@ -20,20 +20,44 @@ public class ActionDemo {
 
     private final ClientRepository clientRepository;
     private final DBServiceClient dbServiceClient;
+    private final DBServiceAddress dbServiceAddress;
+    private final DBServicePhone dbServicePhone;
 
     public ActionDemo(ClientRepository clientRepository,
-                      DBServiceClient dbServiceClient) {
+                      DBServiceClient dbServiceClient,
+                      DBServiceAddress dbServiceAddress,
+                      DBServicePhone dbServicePhone) {
         this.clientRepository = clientRepository;
         this.dbServiceClient = dbServiceClient;
+        this.dbServiceAddress = dbServiceAddress;
+        this.dbServicePhone = dbServicePhone;
     }
 
     void action() {
-        log.info(">>> client creation");
-        dbServiceClient.saveClient(
-                new Client(
-                        "dbServiceFirst",
-                        new Address("Russia", 2),
-                        List.of(new Phone("123"))));
+        log.info(">>> first creation");
+
+        var firstAddress = dbServiceAddress.saveAddress(
+                new Address("Russia", 4)
+        );
+
+        var firstPhones = dbServicePhone.savePhone(
+                new Phone("123")
+        );
+
+//        var firstClient = dbServiceClient.saveClient(
+//                new Client("First client", firstAddress)
+//        );
+
+        var firstClient = dbServiceClient.saveClient(
+                new Client("First client", new Address("Russia", 1))
+        );
+
+//        dbServiceClient.saveClient(
+//                new Client(
+//                        "dbServiceFirst",
+//                        new Address("Russia", 2),
+//                        List.of(new Phone("123"))));
+
 
 //        var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
 //        var clientSecondSelected = dbServiceClient.getClient(clientSecond.getId())

@@ -7,7 +7,6 @@ import ru.otus.crm.model.Client;
 import ru.otus.crm.repository.ClientRepository;
 import ru.otus.sessionmanager.TransactionManager;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,8 +40,7 @@ public class DbServiceClientImpl implements DBServiceClient {
 
     @Override
     public List<Client> findAll() {
-        var clientList = new ArrayList<Client>();
-        clientRepository.findAll().forEach(clientList::add);
+        var clientList = clientRepository.findAll();
         log.info("clientList:{}", clientList);
         return clientList;
     }
