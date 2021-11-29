@@ -3,11 +3,16 @@ package ru.otus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import ru.otus.crm.model.Address;
 import ru.otus.crm.model.Client;
+import ru.otus.crm.model.Phone;
 import ru.otus.crm.repository.ClientRepository;
 import ru.otus.crm.service.DBServiceAddress;
 import ru.otus.crm.service.DBServiceClient;
 import ru.otus.crm.service.DBServicePhone;
+
+import java.util.List;
+import java.util.Set;
 
 
 @Component("actionDemo")
@@ -33,49 +38,34 @@ public class ActionDemo {
     void action() {
         log.info(">>> first creation");
 
-        var firstClient = dbServiceClient.saveClient(new Client("first client"));
-        var savedClient = dbServiceClient.getClient(firstClient.getId());
-
-//        var firstAddress = dbServiceAddress.saveAddress(
-//                new Address("Russia", 4)
-//        );
-//
-//        var savedAddress = dbServiceAddress.getAddress(firstAddress.getAddressId());
-
-//        var firstPhones = dbServicePhone.savePhone(
-//                new Phone("123")
-//        );
-
 //        var firstClient = dbServiceClient.saveClient(
-//                new Client("First client", new Address("Russia", 4))
-//        );
+//                new Client("dbServiceFirst", new Address("Russia", 1)));
 //
-//        var savedClient = dbServiceClient.getClient(firstClient.getClientId());
-//        var savedAddress = dbServiceAddress.getAddress(savedClient.get().getAddress().getAddressId());
-
-//        var firstClient = dbServiceClient.saveClient(
-//                new Client("First client", new Address("Russia", 1))
-//        );
-
-//        dbServiceClient.saveClient(
-//                new Client(
-//                        "dbServiceFirst",
-//                        new Address("Russia", 2),
-//                        List.of(new Phone("123"))));
-
-
-//        var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
-//        var clientSecondSelected = dbServiceClient.getClient(clientSecond.getId())
-//                .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecond.getId()));
-//        log.info("clientSecondSelected:{}", clientSecondSelected);
-/////
-//        dbServiceClient.saveClient(new Client(clientSecondSelected.getId(), "dbServiceSecondUpdated"));
-//        var clientUpdated = dbServiceClient.getClient(clientSecondSelected.getId())
-//                .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecondSelected.getId()));
-//        log.info("clientUpdated:{}", clientUpdated);
+//        log.info("firstClient: {}", firstClient);
 //
 //        log.info("All clients");
 //        dbServiceClient.findAll().forEach(client -> log.info("client:{}", client));
+
+        var firstClient = dbServiceClient.saveClient(
+                new Client(
+                        "dbServiceFirst",
+                        new Address("Russia", 1),
+                        Set.of(new Phone("123"))));
+
+        log.info("firstClient: {}", firstClient);
+
+        var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
+        var clientSecondSelected = dbServiceClient.getClient(clientSecond.getId())
+                .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecond.getId()));
+        log.info("clientSecondSelected:{}", clientSecondSelected);
+///
+        dbServiceClient.saveClient(new Client(clientSecondSelected.getId(), "dbServiceSecondUpdated"));
+        var clientUpdated = dbServiceClient.getClient(clientSecondSelected.getId())
+                .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecondSelected.getId()));
+        log.info("clientUpdated:{}", clientUpdated);
+
+        log.info("All clients");
+        dbServiceClient.findAll().forEach(client -> log.info("client:{}", client));
 
     }
 

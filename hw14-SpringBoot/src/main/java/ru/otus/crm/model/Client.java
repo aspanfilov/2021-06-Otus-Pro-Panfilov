@@ -6,7 +6,6 @@ import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 import java.util.Set;
 
 @Table("client")
@@ -28,11 +27,16 @@ public class Client {
         this.name = name;
     }
 
+    public Client(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Client(String name, Address address) {
         this(null, name, address, null);
     }
 
-    public Client(String name, Address address, List<Phone> phones) {
+    public Client(String name, Address address, Set<Phone> phones) {
         this(null, name, address, phones);
     }
 
@@ -81,6 +85,8 @@ public class Client {
         return "Client{" +
                 "clientId=" + id +
                 ", name='" + name + '\'' +
+                ", address=" + address + '\'' +
+                ", phones=" + phones +
                 '}';
     }
 }

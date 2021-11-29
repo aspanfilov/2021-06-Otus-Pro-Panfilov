@@ -23,7 +23,6 @@ public class Address {
 
     private String street;
 
-    @Nonnull
     private int houseNumber;
 
     private int buildingNumber;
@@ -40,16 +39,16 @@ public class Address {
                    String country,
                    String city,
                    String street,
-                   int house_number,
-                   int building_number,
-                   int apartment_number) {
+                   int houseNumber,
+                   int buildingNumber,
+                   int apartmentNumber) {
         this.id = id;
         this.country = country;
         this.city = city;
         this.street = street;
-        this.houseNumber = house_number;
-        this.buildingNumber = building_number;
-        this.apartmentNumber = apartment_number;
+        this.houseNumber = houseNumber;
+        this.buildingNumber = buildingNumber;
+        this.apartmentNumber = apartmentNumber;
     }
 
     public long getId() {
