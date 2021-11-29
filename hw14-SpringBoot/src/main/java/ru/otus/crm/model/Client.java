@@ -6,24 +6,27 @@ import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Table("client")
 public class Client {
 
     @Id
-    @Nonnull
     private Long id;
 
     @Nonnull
     private String name;
 
-    @Nonnull
+    @MappedCollection(idColumn = "client_id")
     private Address address;
 
     @MappedCollection(idColumn = "client_id")
-    private List<Phone> phones;
+    private Set<Phone> phones;
+
+    public Client(String name) {
+        this.name = name;
+    }
 
     public Client(String name, Address address) {
         this(null, name, address, null);
@@ -34,7 +37,7 @@ public class Client {
     }
 
     @PersistenceConstructor
-    public Client(Long id, String name, Address address, List<Phone> phones) {
+    public Client(Long id, String name, Address address, Set<Phone> phones) {
         this.id = id;
         this.name = name;
         this.address = address;
@@ -65,18 +68,18 @@ public class Client {
         this.address = address;
     }
 
-    public List<Phone> getPhones() {
+    public Set<Phone> getPhones() {
         return phones;
     }
 
-    public void setPhones(List<Phone> phones) {
+    public void setPhones(Set<Phone> phones) {
         this.phones = phones;
     }
 
     @Override
     public String toString() {
         return "Client{" +
-                "id=" + id +
+                "clientId=" + id +
                 ", name='" + name + '\'' +
                 '}';
     }

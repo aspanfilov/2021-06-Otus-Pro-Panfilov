@@ -13,7 +13,8 @@ public class Address {
     @Id
     private Long id;
 
-//    private Long clientId;
+    @Nonnull
+    private Long clientId;
 
     @Nonnull
     private String country;
@@ -55,8 +56,16 @@ public class Address {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
     }
 
     public String getCountry() {
@@ -110,7 +119,7 @@ public class Address {
     @Override
     public String toString() {
         return "Address{" +
-                "id=" + id +
+                "addressId=" + id +
                 ", country='" + country + '\'' +
                 ", city='" + city + '\'' +
                 ", street='" + street + '\'' +

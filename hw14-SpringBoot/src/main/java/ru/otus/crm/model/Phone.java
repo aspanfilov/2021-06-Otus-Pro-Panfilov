@@ -14,10 +14,11 @@ public class Phone{
     private Long id;
 
     @Nonnull
-    private String number;
+    private Long clientId;
 
     @Nonnull
-    private Long clientId;
+    private String number;
+
 
     public Phone(String number) {
         this.number = number;

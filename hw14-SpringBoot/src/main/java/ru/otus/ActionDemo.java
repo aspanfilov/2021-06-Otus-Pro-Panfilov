@@ -3,12 +3,9 @@ package ru.otus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import ru.otus.crm.model.Address;
 import ru.otus.crm.model.Client;
-import ru.otus.crm.model.Phone;
 import ru.otus.crm.repository.ClientRepository;
 import ru.otus.crm.service.DBServiceAddress;
-import ru.otus.crm.service.DBServiceAddressImpl;
 import ru.otus.crm.service.DBServiceClient;
 import ru.otus.crm.service.DBServicePhone;
 
@@ -36,21 +33,29 @@ public class ActionDemo {
     void action() {
         log.info(">>> first creation");
 
-        var firstAddress = dbServiceAddress.saveAddress(
-                new Address("Russia", 4)
-        );
+        var firstClient = dbServiceClient.saveClient(new Client("first client"));
+        var savedClient = dbServiceClient.getClient(firstClient.getId());
 
-        var firstPhones = dbServicePhone.savePhone(
-                new Phone("123")
-        );
+//        var firstAddress = dbServiceAddress.saveAddress(
+//                new Address("Russia", 4)
+//        );
+//
+//        var savedAddress = dbServiceAddress.getAddress(firstAddress.getAddressId());
 
-//        var firstClient = dbServiceClient.saveClient(
-//                new Client("First client", firstAddress)
+//        var firstPhones = dbServicePhone.savePhone(
+//                new Phone("123")
 //        );
 
-        var firstClient = dbServiceClient.saveClient(
-                new Client("First client", new Address("Russia", 1))
-        );
+//        var firstClient = dbServiceClient.saveClient(
+//                new Client("First client", new Address("Russia", 4))
+//        );
+//
+//        var savedClient = dbServiceClient.getClient(firstClient.getClientId());
+//        var savedAddress = dbServiceAddress.getAddress(savedClient.get().getAddress().getAddressId());
+
+//        var firstClient = dbServiceClient.saveClient(
+//                new Client("First client", new Address("Russia", 1))
+//        );
 
 //        dbServiceClient.saveClient(
 //                new Client(
