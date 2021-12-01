@@ -38,34 +38,34 @@ public class ActionDemo {
     void action() {
         log.info(">>> first creation");
 
-//        var firstClient = dbServiceClient.saveClient(
-//                new Client("dbServiceFirst", new Address("Russia", 1)));
-//
-//        log.info("firstClient: {}", firstClient);
-//
-//        log.info("All clients");
-//        dbServiceClient.findAll().forEach(client -> log.info("client:{}", client));
-
         var firstClient = dbServiceClient.saveClient(
-                new Client(
-                        "dbServiceFirst",
-                        new Address("Russia", 1),
-                        Set.of(new Phone("123"))));
+                new Client("dbServiceFirst", new Address("Russia", 1)));
 
         log.info("firstClient: {}", firstClient);
 
-        var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
-        var clientSecondSelected = dbServiceClient.getClient(clientSecond.getId())
-                .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecond.getId()));
-        log.info("clientSecondSelected:{}", clientSecondSelected);
-///
-        dbServiceClient.saveClient(new Client(clientSecondSelected.getId(), "dbServiceSecondUpdated"));
-        var clientUpdated = dbServiceClient.getClient(clientSecondSelected.getId())
-                .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecondSelected.getId()));
-        log.info("clientUpdated:{}", clientUpdated);
-
         log.info("All clients");
         dbServiceClient.findAll().forEach(client -> log.info("client:{}", client));
+
+//        var firstClient = dbServiceClient.saveClient(
+//                new Client(
+//                        "dbServiceFirst",
+//                        new Address("Russia", 1),
+//                        Set.of(new Phone("123"))));
+//
+//        log.info("firstClient: {}", firstClient);
+//
+//        var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
+//        var clientSecondSelected = dbServiceClient.getClient(clientSecond.getId())
+//                .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecond.getId()));
+//        log.info("clientSecondSelected:{}", clientSecondSelected);
+/////
+//        dbServiceClient.saveClient(new Client(clientSecondSelected.getId(), "dbServiceSecondUpdated"));
+//        var clientUpdated = dbServiceClient.getClient(clientSecondSelected.getId())
+//                .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecondSelected.getId()));
+//        log.info("clientUpdated:{}", clientUpdated);
+//
+//        log.info("All clients");
+//        dbServiceClient.findAll().forEach(client -> log.info("client:{}", client));
 
     }
 

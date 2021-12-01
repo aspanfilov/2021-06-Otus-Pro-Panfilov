@@ -42,7 +42,7 @@ public class ClientResultSetExtractorClass implements ResultSetExtractor<List<Cl
     }
 
     private Optional<Address> getAddress(ResultSet rs) throws SQLException {
-        Optional<Address> address = null;
+        Optional<Address> address = Optional.empty();
         long addressId = rs.getLong("address_id");
         if (addressId != 0) {
             address = Optional.of(new Address(
@@ -58,7 +58,7 @@ public class ClientResultSetExtractorClass implements ResultSetExtractor<List<Cl
     }
 
     private Optional<Phone> getPhone(ResultSet rs) throws SQLException {
-        Optional<Phone> phone = null;
+        Optional<Phone> phone = Optional.empty();
         long phoneId = rs.getLong("phone_id");
         if (phoneId != 0) {
             phone = Optional.of(new Phone(
