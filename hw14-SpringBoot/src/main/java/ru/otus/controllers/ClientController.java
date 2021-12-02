@@ -32,7 +32,7 @@ public class ClientController {
         List<ClientDto> clientDtoList = clientList.stream().map(ClientDto::new).collect(Collectors.toList());
 
         model.addAttribute("clients", clientDtoList);
-        return "clientsList";
+        return "clientsList.html";
     }
 
     @GetMapping("/client/create")
@@ -40,7 +40,7 @@ public class ClientController {
         model.addAttribute("client", new Client());
         model.addAttribute("address", new Address());
         model.addAttribute("phone", new Phone());
-        return "clientCreate";
+        return "clientCreate.html";
     }
 
     @PostMapping("/client/save")

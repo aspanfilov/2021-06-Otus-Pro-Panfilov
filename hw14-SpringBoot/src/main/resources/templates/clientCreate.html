@@ -27,7 +27,7 @@
 
 <form th:action="@{/client/save}" th:method="post" accept-charset="utf-8">
     <h1>Создание нового клиента:</h1>
-    <p>Имя клиента: <input type="text" placeholder="Обязательное" name="clientName" th:value="${client.name}"></p>
+    <p>Имя клиента: <input type="text" placeholder="Обязательное" name="name" th:value="${client.name}"></p>
     <p>Страна: <input type="text" size="20" placeholder="Обязательное" name="country" th:value="${address.country}"></p>
     <p>Город: <input type="text" size="20" placeholder="" name="city" th:value="${address.city}"></p>
     <p>Улица: <input type="text" size="20" placeholder="" name="street" th:value="${address.street}"></p>
@@ -37,7 +37,7 @@
         <input type="text" size="6" placeholder="" name="buildingNumber" th:value="${address.buildingNumber}">
         <input type="text" size="6" placeholder="" name="apartmentNumber" th:value="${address.apartmentNumber}">
     </p>
-    <p>Телефон: <input type="text" size="20" placeholder="" name="phoneNumber" th:value="${phone.number}"></p>
+    <p>Телефон: <input type="text" size="20" placeholder="" name="number" th:value="${phone.number}"></p>
 
     <p><input type="submit" value="Сохранить"></p>
 </form>
