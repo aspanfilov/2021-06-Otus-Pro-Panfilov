@@ -24,7 +24,7 @@ public class DBServicePhoneImpl implements DBServicePhone{
     }
 
     @Override
-    public Phone savePhone(Phone phone) {
+    public Phone save(Phone phone) {
         return transactionManager.doInTransaction(() -> {
             var savedPhone = phoneRepository.save(phone);
             log.info("saved phone: {}", savedPhone);
@@ -33,7 +33,7 @@ public class DBServicePhoneImpl implements DBServicePhone{
     }
 
     @Override
-    public Optional<Phone> getPhone(Long id) {
+    public Optional<Phone> get(Long id) {
         var phoneOptional = phoneRepository.findById(id);
         log.info("phone: {}", phoneOptional);
         return phoneOptional;

@@ -23,7 +23,7 @@ public class DbServiceClientImpl implements DBServiceClient {
     }
 
     @Override
-    public Client saveClient(Client client) {
+    public Client save(Client client) {
         return transactionManager.doInTransaction(() -> {
             var savedClient = clientRepository.save(client);
             log.info("saved client: {}", savedClient);
@@ -32,7 +32,7 @@ public class DbServiceClientImpl implements DBServiceClient {
     }
 
     @Override
-    public Optional<Client> getClient(long id) {
+    public Optional<Client> get(long id) {
         var clientOptional = clientRepository.findById(id);
         log.info("client: {}", clientOptional);
         return clientOptional;

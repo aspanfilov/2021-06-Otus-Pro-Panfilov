@@ -24,7 +24,7 @@ public class DBServiceAddressImpl implements DBServiceAddress{
     }
 
     @Override
-    public Address saveAddress(Address address) {
+    public Address save(Address address) {
         return transactionManager.doInTransaction(() -> {
             var savedAddress = addressRepository.save(address);
             log.info("saved address: {}", savedAddress);
@@ -33,7 +33,7 @@ public class DBServiceAddressImpl implements DBServiceAddress{
     }
 
     @Override
-    public Optional<Address> getAddress(Long id) {
+    public Optional<Address> get(Long id) {
         var addressOptional = addressRepository.findById(id);
         log.info("address: {}", addressOptional);
         return addressOptional;

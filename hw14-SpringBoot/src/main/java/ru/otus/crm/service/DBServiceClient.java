@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface DBServiceClient {
 
-    Client saveClient(Client client);
+    Client save(Client client);
 
-    Optional<Client> getClient(long id);
+    Optional<Client> get(long id);
 
     List<Client> findAll();
 

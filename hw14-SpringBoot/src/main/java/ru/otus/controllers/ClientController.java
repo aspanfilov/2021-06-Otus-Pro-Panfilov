@@ -7,48 +7,41 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.view.RedirectView;
-import ru.otus.domain.Client;
-import ru.otus.services.ClientService;
+import ru.otus.crm.dto.ClientDto;
+import ru.otus.crm.model.Client;
+import ru.otus.crm.service.DBServiceClient;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class ClientController {
 
-    private final String osData;
-    private final String applicationYmlMessage;
-    private final ClientService clientService;
+    private final DBServiceClient clientService;
 
-    public ClientController(@Value("${app.client-list-page.msg:Тут может находиться ваша реклама}")
-                                    String applicationYmlMessage,
-                            @Value("OS: #{T(System).getProperty(\"os.name\")}, " +
-                                    "JDK: #{T(System).getProperty(\"java.runtime.version\")}")
-                                    String osData,
-                            ClientService clientService) {
-        this.applicationYmlMessage = applicationYmlMessage;
-        this.osData = osData;
+    public ClientController(DBServiceClient clientService) {
         this.clientService = clientService;
     }
 
     @GetMapping({"/", "/client/list"})
     public String clientsListView(Model model) {
-        List<Client> clients = clientService.findAll();
-        model.addAttribute("clients", clients);
-        model.addAttribute("osData", osData);
-        model.addAttribute("applicationYmlMessage", applicationYmlMessage);
+        List<Client> clientList = clientService.findAll();
+        List<ClientDto> clientDtoList = clientList.stream().map(ClientDto::new).collect(Collectors.toList());
+
+        model.addAttribute("clients", clientDtoList);
         return "clientsList";
     }
 
-    @GetMapping("/client/create")
-    public String clientCreateView(Model model) {
-        model.addAttribute("client", new Client());
-        return "clientCreate";
-    }
+//    @GetMapping("/client/create")
+//    public String clientCreateView(Model model) {
+//        model.addAttribute("client", new Client());
+//        return "clientCreate";
+//    }
 
-    @PostMapping("/client/save")
-    public RedirectView clientSave(@ModelAttribute Client client) {
-        clientService.save(client);
-        return new RedirectView("/", true);
-    }
+//    @PostMapping("/client/save")
+//    public RedirectView clientSave(@ModelAttribute Client client) {
+//        clientService.save(client);
+//        return new RedirectView("/", true);
+//    }
 
 }

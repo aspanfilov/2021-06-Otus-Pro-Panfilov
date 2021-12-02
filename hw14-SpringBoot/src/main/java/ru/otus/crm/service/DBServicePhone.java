@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface DBServicePhone {
 
-    Phone savePhone(Phone phone);
+    Phone save(Phone phone);
 
-    Optional<Phone> getPhone(Long id);
+    Optional<Phone> get(Long id);
 
     List<Phone> findAll();
 

@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface DBServiceAddress {
 
-    Address saveAddress(Address address);
+    Address save(Address address);
 
-    Optional<Address> getAddress(Long id);
+    Optional<Address> get(Long id);
 
     List<Address> findAll();
 
