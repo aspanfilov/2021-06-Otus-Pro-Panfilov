@@ -52,7 +52,8 @@ public class ClientResultSetExtractorClass implements ResultSetExtractor<List<Cl
                     rs.getString("address_street"),
                     rs.getInt("address_house_number"),
                     rs.getInt("address_building_number"),
-                    rs.getInt("address_apartment_number")));
+                    rs.getInt("address_apartment_number"),
+                    rs.getLong("client_id")));
         }
         return address;
     }

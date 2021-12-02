@@ -8,10 +8,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.view.RedirectView;
 import ru.otus.crm.dto.ClientDto;
+import ru.otus.crm.model.Address;
 import ru.otus.crm.model.Client;
+import ru.otus.crm.model.Phone;
 import ru.otus.crm.service.DBServiceClient;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -32,16 +35,39 @@ public class ClientController {
         return "clientsList";
     }
 
-//    @GetMapping("/client/create")
-//    public String clientCreateView(Model model) {
-//        model.addAttribute("client", new Client());
-//        return "clientCreate";
-//    }
+    @GetMapping("/client/create")
+    public String clientCreateView(Model model) {
+        model.addAttribute("client", new Client());
+        model.addAttribute("address", new Address());
+        model.addAttribute("phone", new Phone());
+        return "clientCreate";
+    }
 
-//    @PostMapping("/client/save")
-//    public RedirectView clientSave(@ModelAttribute Client client) {
-//        clientService.save(client);
-//        return new RedirectView("/", true);
-//    }
+    @PostMapping("/client/save")
+    public RedirectView clientSave(
+            @ModelAttribute Client client,
+            @ModelAttribute Address address,
+            @ModelAttribute Phone phone) {
+
+        clientService.save(new Client(
+                null,
+                client.getName(),
+                new Address(
+                        null,
+                        address.getCountry(),
+                        address.getCity(),
+                        address.getStreet(),
+                        address.getHouseNumber(),
+                        address.getBuildingNumber(),
+                        address.getApartmentNumber(),
+                        client.getId()),
+                Set.of(new Phone(
+                        null,
+                        phone.getNumber(),
+                        client.getId()))
+        ));
+
+        return new RedirectView("/", true);
+    }
 
 }

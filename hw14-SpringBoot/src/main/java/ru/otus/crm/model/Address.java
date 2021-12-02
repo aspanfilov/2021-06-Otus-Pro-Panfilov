@@ -29,6 +29,8 @@ public class Address {
 
     private int apartmentNumber;
 
+    public Address() {}
+
     public Address(String country, int houseNumber) {
         this.country = country;
         this.houseNumber = houseNumber;
@@ -41,7 +43,8 @@ public class Address {
                    String street,
                    int houseNumber,
                    int buildingNumber,
-                   int apartmentNumber) {
+                   int apartmentNumber,
+                   Long clientId) {
         this.id = id;
         this.country = country;
         this.city = city;
@@ -49,6 +52,7 @@ public class Address {
         this.houseNumber = houseNumber;
         this.buildingNumber = buildingNumber;
         this.apartmentNumber = apartmentNumber;
+        this.clientId = clientId;
     }
 
     public long getId() {

@@ -19,6 +19,7 @@ public class Phone{
     @Nonnull
     private String number;
 
+    public Phone() {}
 
     public Phone(String number) {
         this.number = number;
@@ -35,7 +36,7 @@ public class Phone{
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -50,6 +51,11 @@ public class Phone{
     public Long getClientId() {
         return clientId;
     }
+
+    public void setClientId(Long clientId) {
+        this.clientId = clientId;
+    }
+
 
     @Override
     public String toString() {

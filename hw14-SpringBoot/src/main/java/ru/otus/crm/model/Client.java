@@ -23,6 +23,8 @@ public class Client {
     @MappedCollection(idColumn = "client_id")
     private Set<Phone> phones;
 
+    public Client() {}
+
     public Client(String name) {
         this.name = name;
     }
