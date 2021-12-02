@@ -1,5 +1,7 @@
 package ru.otus.crm.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import ru.otus.crm.model.Address;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ClientResultSetExtractorClass implements ResultSetExtractor<List<Client>> {
+
     @Override
     public List<Client> extractData(ResultSet rs) throws SQLException, DataAccessException {
         var clientList = new ArrayList<Client>();
@@ -21,7 +24,7 @@ public class ClientResultSetExtractorClass implements ResultSetExtractor<List<Cl
         while (rs.next()) {
             var clientId = rs.getLong("client_id");
             Client client = null;
-            if (prevClientId == clientId || prevClientId == 0) {
+            if (prevClientId != clientId) {
                 client = new Client(clientId,
                         rs.getString("client_name"),
                         null,
