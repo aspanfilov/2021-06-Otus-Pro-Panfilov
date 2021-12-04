@@ -61,8 +61,8 @@
     <tr th:each="client : ${clients}">
         <td th:text="${client.id}">1</td>
         <td th:text="${client.name}">Иванов Иван Иванович</td>
-        <td th:text="${client.address}">Россия, Москва, улица Веселая, д 4</td>
-        <td th:text="${client.phones}">123</td>
+        <td th:text="${client.addressView}">Россия, Москва, улица Веселая, д 4</td>
+        <td th:text="${client.phonesView}">123</td>
     </tr>
     </tbody>
 </table>

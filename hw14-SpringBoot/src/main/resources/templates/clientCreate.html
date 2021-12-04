@@ -27,17 +27,17 @@
 
 <form th:action="@{/client/save}" th:method="post" accept-charset="utf-8">
     <h1>Создание нового клиента:</h1>
-    <p>Имя клиента: <input type="text" placeholder="Обязательное" name="name" th:value="${client.name}"></p>
-    <p>Страна: <input type="text" size="20" placeholder="Обязательное" name="country" th:value="${address.country}"></p>
-    <p>Город: <input type="text" size="20" placeholder="" name="city" th:value="${address.city}"></p>
-    <p>Улица: <input type="text" size="20" placeholder="" name="street" th:value="${address.street}"></p>
+    <p>Имя клиента: <input type="text" placeholder="Обязательное" name="name" th:value="${clientDto.name}"></p>
+    <p>Страна: <input type="text" size="20" placeholder="Обязательное" name="addressCountry" th:value="${clientDto.addressCountry}"></p>
+    <p>Город: <input type="text" size="20" placeholder="" name="addressCity" th:value="${clientDto.addressCity}"></p>
+    <p>Улица: <input type="text" size="20" placeholder="" name="addressStreet" th:value="${clientDto.addressStreet}"></p>
     <p>
         Дом/Строение/Квартира:
-        <input type="text" size="15" placeholder="Обязательное" name="houseNumber" th:value="${address.houseNumber}">
-        <input type="text" size="6" placeholder="" name="buildingNumber" th:value="${address.buildingNumber}">
-        <input type="text" size="6" placeholder="" name="apartmentNumber" th:value="${address.apartmentNumber}">
+        <input type="text" size="15" placeholder="Обязательное" name="addressHouseNumber" th:value="${clientDto.addressHouseNumber}">
+        <input type="text" size="6" placeholder="" name="addressBuildingNumber" th:value="${clientDto.addressBuildingNumber}">
+        <input type="text" size="6" placeholder="" name="addressApartmentNumber" th:value="${clientDto.addressApartmentNumber}">
     </p>
-    <p>Телефон: <input type="text" size="20" placeholder="" name="number" th:value="${phone.number}"></p>
+    <p>Телефон: <input type="text" size="20" placeholder="" name="phoneNumber" th:value="${clientDto.phoneNumber}"></p>
 
     <p><input type="submit" value="Сохранить"></p>
 </form>
