@@ -4,6 +4,19 @@
     <meta charset="UTF-8"/>
     <title>Список клиентов</title>
 
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+
+    <script type="text/JavaScript">
+        function getClients() {
+          const stompClient = Stomp.over(new SockJS('/gs-guide-websocket'));
+          stompClient.connect({}, (frame) => {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/clientsList', (timeMsg) => document.getElementById("currentTime").innerHTML = timeMsg.body);
+          });
+        }
+    </script>
+
     <style type="text/css">
         body {
             padding: 50px;
@@ -44,10 +57,9 @@
 
 </head>
 
-<body>
-
+<body onload="getClients();">
 <h3>Клиенты:</h3>
-
+<div id="currentTime">фыва</div>
 <table class="clients">
     <thead>
     <tr>
