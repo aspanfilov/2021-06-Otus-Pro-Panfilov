@@ -8,13 +8,15 @@
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
 
     <script type="text/JavaScript">
-        function getClients() {
-          const stompClient = Stomp.over(new SockJS('/gs-guide-websocket'));
-          stompClient.connect({}, (frame) => {
-            console.log('Connected: ' + frame);
-            stompClient.subscribe('/topic/clientsList', (timeMsg) => document.getElementById("currentTime").innerHTML = timeMsg.body);
-          });
-        }
+    function getClients() {
+      const stompClient = Stomp.over(new SockJS('/websocket'));
+      stompClient.connect({}, (frame) => {
+        console.log('Connected: ' + frame);
+        stompClient.subscribe('/topic/currentTime',
+                (timeMsg) => document.getElementById("currentTime").innerHTML = timeMsg.body);
+<!--        stompClient.send("/app/message, {}, "GETCLIENTS");-->
+      });
+    }
     </script>
 
     <style type="text/css">

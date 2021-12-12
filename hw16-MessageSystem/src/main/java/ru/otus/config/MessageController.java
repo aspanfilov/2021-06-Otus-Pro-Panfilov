@@ -1,4 +1,4 @@
-package ru.otus.controllers;
+package ru.otus.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +13,10 @@ import ru.otus.domain.Message;
 public class MessageController {
     private static final Logger logger = LoggerFactory.getLogger(MessageController.class);
 
-    @SendTo("/topic/clientsList")
-    public Message getMessage(@DestinationVariable String roomId, Message message) {
-        logger.info("got message:{}, roomId:{}", message, roomId);
+    @MessageMapping("/message")
+    @SendTo("/topic/currentTime")
+    public Message getMessage(@DestinationVariable Message message) {
+        logger.info("got message:{}", message);
         return new Message(HtmlUtils.htmlEscape(message.getMessageStr()));
     }
 
