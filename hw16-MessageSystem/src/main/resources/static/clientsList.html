@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Список клиентов</title>
+    <title>CLIENT LIST</title>
 
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
@@ -60,7 +60,7 @@
 </head>
 
 <body onload="getClients();">
-<h3>Клиенты:</h3>
+<h3>CLientsss list:</h3>
 <div id="currentTime">фыва</div>
 <table class="clients">
     <thead>
@@ -81,7 +81,7 @@
     </tbody>
 </table>
 
-<a th:href="@{/client/create}" href="clientCreate.html">Новый клиент</a>
+<a th:href="@{/client/create}" href="clientCreate.html">new client</a>
 
 </body>
 </html>

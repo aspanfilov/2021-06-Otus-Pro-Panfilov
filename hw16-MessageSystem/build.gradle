@@ -1,10 +1,10 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '2.4.4'
+    id 'org.springframework.boot' version '2.5.5'
 }
 
-sourceCompatibility = JavaVersion.VERSION_15
-targetCompatibility = JavaVersion.VERSION_15
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 dependencies {
     dependencies {
@@ -28,5 +28,10 @@ dependencies {
     }
 }
 
-test {
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.with {
+        encoding = 'UTF-8'
+    }
 }
