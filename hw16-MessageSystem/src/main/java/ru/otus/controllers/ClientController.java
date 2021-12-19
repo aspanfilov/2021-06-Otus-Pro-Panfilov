@@ -17,6 +17,8 @@ import ru.otus.crm.model.Client;
 import ru.otus.crm.service.DBServiceClient;
 import ru.otus.domain.Message;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +38,17 @@ public class ClientController {
     public Message clients() {
         logger.info("get client list");
 //        logger.info(message.getMessageStr());
-        return new Message("TEST_CLIENT");
+
+//        var msg = new ArrayList<String>();
+//        msg.add("Client 1");
+//        msg.add("Client 2");
+//        return new Message(msg);
+//
+        List<Client> clientList = clientService.findAll();
+        List<ClientDto> clientDtoList = clientList.stream().map(ClientDto::new).collect(Collectors.toList());
+        return new Message(clientDtoList);
+
+//        return new Message("TEST_CLIENT");
     }
 
 //    @MessageMapping("/message")
@@ -54,7 +66,7 @@ public class ClientController {
 //        model.addAttribute("clients", clientDtoList);
 //        return "clientsList.html";
 //    }
-//
+
 //    @GetMapping("/client/create")
 //    public String clientCreateView(Model model) {
 //        model.addAttribute("clientDto", new ClientDto());
