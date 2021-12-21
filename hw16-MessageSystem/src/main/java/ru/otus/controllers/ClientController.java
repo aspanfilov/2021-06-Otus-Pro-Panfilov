@@ -43,8 +43,9 @@ public class ClientController {
     }
 
     @MessageMapping("/createClient")
-    public void createClient(Client client) {
-        logger.info("create client {}", client);
+    public void createClient(ClientDto clientDto) {
+        logger.info("create client {}", clientDto);
+        clientService.save(clientDto.toClient());
     }
 
 //    @MessageMapping("/message")

@@ -257,6 +257,16 @@ public class ClientDto {
         return phonesView.toString();
     }
 
+//    @Override
+//    public String toString() {
+//        return "ClientDto{" +
+//                "id=" + id +
+//                ", name='" + name + '\'' +
+//                ", addressView='" + addressView + '\'' +
+//                ", phonesView='" + phonesView + '\'' +
+//                '}';
+
+
     @Override
     public String toString() {
         return "ClientDto{" +
@@ -264,6 +274,17 @@ public class ClientDto {
                 ", name='" + name + '\'' +
                 ", addressView='" + addressView + '\'' +
                 ", phonesView='" + phonesView + '\'' +
+                ", addressId=" + addressId +
+                ", addressClientId=" + addressClientId +
+                ", addressCountry='" + addressCountry + '\'' +
+                ", addressCity='" + addressCity + '\'' +
+                ", addressStreet='" + addressStreet + '\'' +
+                ", addressHouseNumber=" + addressHouseNumber +
+                ", addressBuildingNumber=" + addressBuildingNumber +
+                ", addressApartmentNumber=" + addressApartmentNumber +
+                ", phoneId=" + phoneId +
+                ", phoneClientId=" + phoneClientId +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 '}';
     }
 }
