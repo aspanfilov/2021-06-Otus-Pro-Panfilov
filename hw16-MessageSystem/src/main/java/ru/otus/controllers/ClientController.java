@@ -37,18 +37,14 @@ public class ClientController {
     @SendTo("/topic/response")
     public Message clients() {
         logger.info("get client list");
-//        logger.info(message.getMessageStr());
-
-//        var msg = new ArrayList<String>();
-//        msg.add("Client 1");
-//        msg.add("Client 2");
-//        return new Message(msg);
-//
         List<Client> clientList = clientService.findAll();
         List<ClientDto> clientDtoList = clientList.stream().map(ClientDto::new).collect(Collectors.toList());
         return new Message(clientDtoList);
+    }
 
-//        return new Message("TEST_CLIENT");
+    @MessageMapping("/createClient")
+    public void createClient(Client client) {
+        logger.info("create client {}", client);
     }
 
 //    @MessageMapping("/message")

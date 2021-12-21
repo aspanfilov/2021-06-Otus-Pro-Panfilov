@@ -17,12 +17,10 @@ const connect = () => {
 
 const clientList = () => stompClient.send("/app/clients", {}, {})
 
-//const createUser = () => stompClient.send("/app/createUser", {}, JSON.stringify({
-//    'login': $("#userLoginTextBox").val(),
-//    'password': $("#userPassTextBox").val(),
-//    'name': $("#userNameTextBox").val(),
-//    'age': $("#userAgeTextBox").val()
-//}))
+const createUser = () => stompClient.send("/app/createClient", {}, JSON.stringify({
+    'name': $("#nameTextBox").val(),
+    'addressCountry': $("#addressCountryTextBox").val()
+}))
 
 const showClient = (client) => $("#clients")
         .append("<tr>")
@@ -36,9 +34,9 @@ window.onload = function () {
     connect();
 };
 
-//$(function () {
-//    $("form").on('submit', (event) => {
-//        event.preventDefault();
-//    });
-//    $("#create").click(createUser);
-//});
+$(function () {
+    $("form").on('submit', (event) => {
+        event.preventDefault();
+    });
+    $("#create").click(createClient);
+});
