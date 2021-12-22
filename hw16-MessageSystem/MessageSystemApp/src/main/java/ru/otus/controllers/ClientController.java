@@ -9,6 +9,7 @@ import ru.otus.crm.dto.ClientDto;
 import ru.otus.crm.handlers.GetClientsRequestHandler;
 import ru.otus.crm.model.Client;
 import ru.otus.crm.service.DBServiceClient;
+import ru.otus.crm.service.DbServiceClientImpl;
 import ru.otus.messagesystem.HandlersStoreImpl;
 import ru.otus.messagesystem.MessageSystemImpl;
 import ru.otus.messagesystem.client.MsClientImpl;
@@ -23,24 +24,20 @@ public class ClientController {
 
     private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
 
-    private static final String FRONTEND_SERVICE_CLIENT_NAME = "frontendService";
-    private static final String DATABASE_SERVICE_CLIENT_NAME = "databaseService";
-
-
     public ClientController(DBServiceClient clientService) {
 
         var messageSystem = new MessageSystemImpl();
 
         var requestHandlerDatabaseStore = new HandlersStoreImpl();
-        requestHandlerDatabaseStore.addHandler(MessageType.GET_CLIENTS, new GetClientsRequestHandler(new DBServiceImpl()));
-        requestHandlerDatabaseStore.addHandler(MessageType.SAVE_CLIENT, new GetUserDataRequestHandler(new DBServiceImpl()));
+        requestHandlerDatabaseStore.addHandler(MessageType.GET_CLIENTS, new GetClientsRequestHandler(clientService));
+//        requestHandlerDatabaseStore.addHandler(MessageType.SAVE_CLIENT, new GetUserDataRequestHandler(new DBServiceImpl()));
         var databaseMsClient = new MsClientImpl(DATABASE_SERVICE_CLIENT_NAME, messageSystem, requestHandlerDatabaseStore);
         messageSystem.addClient(databaseMsClient);
 
-        var requestHandlerFrontendStore = new HandlersStoreImpl();
-        requestHandlerFrontendStore.addHandler(MessageType.USER_DATA, new GetUserDataResponseHandler());
-        var frontendMsClient = new MsClientImpl(FRONTEND_SERVICE_CLIENT_NAME, messageSystem, requestHandlerFrontendStore);
-        messageSystem.addClient(frontendMsClient);
+//        var requestHandlerFrontendStore = new HandlersStoreImpl();
+//        requestHandlerFrontendStore.addHandler(MessageType.USER_DATA, new GetUserDataResponseHandler());
+//        var frontendMsClient = new MsClientImpl(FRONTEND_SERVICE_CLIENT_NAME, messageSystem, requestHandlerFrontendStore);
+//        messageSystem.addClient(frontendMsClient);
 
     }
 

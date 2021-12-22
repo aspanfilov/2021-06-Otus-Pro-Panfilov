@@ -25,14 +25,13 @@ public class GetClientsRequestHandler implements RequestHandler<> {
         this.clientService = clientService;
     }
 
-
     @Override
     public <T extends ResultDataType> Optional<Message<T>> handle(Message<T> msg) {
         try {
             logger.info("get client list");
             List<Client> clientList = clientService.findAll();
             List<ClientDto> clientDtoList = clientList.stream().map(ClientDto::new).collect(Collectors.toList());
-            return Optional.of(MessageBuilder.buildReplyMessage(MessageType.GET_CLIENTS, clientDtoList))
+            return Optional.of(MessageBuilder.buildReplyMessage(msg, (T) clientDtoList));
         } catch (Exception e) {
             logger.info("error: get client list", e);
             return Optional.empty();

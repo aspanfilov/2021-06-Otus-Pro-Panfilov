@@ -18,13 +18,32 @@ public class MessageBuilder {
     }
 
     public static <T extends ResultDataType> Message<T> buildReplyMessage(Message<T> message, T data) {
-        return buildMessage(message.getTo(), message.getFrom(), message.getId(), data, message.getType(), message.getCallback());
+        return buildMessage(
+                message.getTo(),
+                message.getFrom(),
+                message.getId(),
+                data,
+                message.getType(),
+                message.getCallback());
     }
 
-    public static <T extends ResultDataType> Message<T> buildMessage(String from, String to, MessageId sourceMessageId,
-                                                                     T data, MessageType msgType, MessageCallback<T> callback) {
+    public static <T extends ResultDataType> Message<T> buildMessage(
+            String from,
+            String to,
+            MessageId sourceMessageId,
+            T data,
+            MessageType msgType,
+            MessageCallback<T> callback) {
+
         String id = UUID.randomUUID().toString();
-        return new Message<>(new MessageId(id), from, to, sourceMessageId, msgType, data, callback);
+        return new Message<>(
+                new MessageId(id),
+                from,
+                to,
+                sourceMessageId,
+                msgType,
+                data,
+                callback);
     }
 
     public static class ResultDataTypeVoid implements ResultDataType {
