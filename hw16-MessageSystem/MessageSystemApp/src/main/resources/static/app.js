@@ -17,16 +17,19 @@ const connect = () => {
 
 const clientList = () => stompClient.send("/app/clients", {}, {})
 
-const createClient = () => stompClient.send("/app/createClient", {}, JSON.stringify({
-    'name': $("#nameTextBox").val(),
-    'addressCountry': $("#addressCountryTextBox").val(),
-    'addressCity': $("#addressCityTextBox").val(),
-    'addressStreet': $("#addressStreetTextBox").val(),
-    'addressHouseNumber': $("#addressHouseNumberTextBox").val(),
-    'addressBuildingNumber': $("#addressBuildingNumberTextBox").val(),
-    'addressApartmentNumber': $("#addressApartmentNumberTextBox").val(),
-    'phoneNumber': $("#phoneNumberTextBox").val(),
-}))
+const createClient = () => {
+    stompClient.send("/app/createClient", {}, JSON.stringify({
+        'name': $("#nameTextBox").val(),
+        'addressCountry': $("#addressCountryTextBox").val(),
+        'addressCity': $("#addressCityTextBox").val(),
+        'addressStreet': $("#addressStreetTextBox").val(),
+        'addressHouseNumber': $("#addressHouseNumberTextBox").val(),
+        'addressBuildingNumber': $("#addressBuildingNumberTextBox").val(),
+        'addressApartmentNumber': $("#addressApartmentNumberTextBox").val(),
+        'phoneNumber': $("#phoneNumberTextBox").val()
+    }));
+
+}
 
 const showClient = (client) => $("#clients")
         .append("<tr>")

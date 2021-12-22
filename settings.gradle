@@ -14,5 +14,8 @@ include 'hw12-webserver'
 
 include 'hw14-SpringBoot'
 include 'hw15-multithreading'
-include 'hw16-MessageSystem'
+
+include 'hw16-MessageSystem:MessageSystem'
+include 'hw16-MessageSystem:MessageSystemApp'
+
 include 'hw17-gRPC'
