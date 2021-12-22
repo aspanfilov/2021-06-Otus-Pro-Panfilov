@@ -8,6 +8,8 @@ targetCompatibility = JavaVersion.VERSION_17
 
 dependencies {
     dependencies {
+        implementation project(':hw16-MessageSystem:MessageSystem')
+        
         implementation 'ch.qos.logback:logback-classic'
         implementation 'org.flywaydb:flyway-core'
         implementation 'org.postgresql:postgresql'

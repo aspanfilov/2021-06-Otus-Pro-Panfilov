@@ -6,10 +6,15 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import ru.otus.crm.dto.ClientDto;
+import ru.otus.crm.handlers.GetClientsRequestHandler;
 import ru.otus.crm.model.Client;
 import ru.otus.crm.service.DBServiceClient;
-import ru.otus.domain.Message;
+import ru.otus.messagesystem.HandlersStoreImpl;
+import ru.otus.messagesystem.MessageSystemImpl;
+import ru.otus.messagesystem.client.MsClientImpl;
+import ru.otus.messagesystem.message.MessageType;
 
+import java.awt.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,10 +23,25 @@ public class ClientController {
 
     private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
 
-    private final DBServiceClient clientService;
+    private static final String FRONTEND_SERVICE_CLIENT_NAME = "frontendService";
+    private static final String DATABASE_SERVICE_CLIENT_NAME = "databaseService";
+
 
     public ClientController(DBServiceClient clientService) {
-        this.clientService = clientService;
+
+        var messageSystem = new MessageSystemImpl();
+
+        var requestHandlerDatabaseStore = new HandlersStoreImpl();
+        requestHandlerDatabaseStore.addHandler(MessageType.GET_CLIENTS, new GetClientsRequestHandler(new DBServiceImpl()));
+        requestHandlerDatabaseStore.addHandler(MessageType.SAVE_CLIENT, new GetUserDataRequestHandler(new DBServiceImpl()));
+        var databaseMsClient = new MsClientImpl(DATABASE_SERVICE_CLIENT_NAME, messageSystem, requestHandlerDatabaseStore);
+        messageSystem.addClient(databaseMsClient);
+
+        var requestHandlerFrontendStore = new HandlersStoreImpl();
+        requestHandlerFrontendStore.addHandler(MessageType.USER_DATA, new GetUserDataResponseHandler());
+        var frontendMsClient = new MsClientImpl(FRONTEND_SERVICE_CLIENT_NAME, messageSystem, requestHandlerFrontendStore);
+        messageSystem.addClient(frontendMsClient);
+
     }
 
     @MessageMapping("/clients")
