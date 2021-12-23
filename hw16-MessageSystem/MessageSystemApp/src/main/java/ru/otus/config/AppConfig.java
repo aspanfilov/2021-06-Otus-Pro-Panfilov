@@ -3,6 +3,7 @@ package ru.otus.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.otus.crm.handlers.GetClientsRequestHandler;
+import ru.otus.crm.handlers.GetClientsResponseHandler;
 import ru.otus.crm.handlers.SaveClientRequestHandler;
 import ru.otus.crm.service.DBServiceClient;
 import ru.otus.crm.service.DbServiceClientImpl;
@@ -25,21 +26,34 @@ public class AppConfig {
         return new MessageSystemImpl();
     }
 
-    @Bean
-    public HandlersStore requestHandlerDatabaseStore(DBServiceClient dbServiceClient, MessageSystem messageSystem) {
-        var requestHandlerDatabaseStore = new HandlersStoreImpl();
+    @Bean("databaseService")
+    public MsClient databaseMsClient(MessageSystem messageSystem, DBServiceClient dbServiceClient) {
+        HandlersStore requestHandlerDatabaseStore = new HandlersStoreImpl();
         requestHandlerDatabaseStore.addHandler(MessageType.GET_CLIENTS, new GetClientsRequestHandler(dbServiceClient));
 //        requestHandlerDatabaseStore.addHandler(MessageType.SAVE_CLIENT, new SaveClientRequestHandler(dbServiceClient));
-        var databaseMsClient = new MsClientImpl(DATABASE_SERVICE_CLIENT_NAME, messageSystem, requestHandlerDatabaseStore);
+        MsClient databaseMsClient = new MsClientImpl(DATABASE_SERVICE_CLIENT_NAME, messageSystem, requestHandlerDatabaseStore);
+        messageSystem.addClient(databaseMsClient);
+
         return databaseMsClient;
     }
 
-    @Bean
-    public MsClient databaseMsClient(
-            MessageSystem messageSystem,
-            HandlersStore requestHandlerDatabaseStore) {
+    @Bean("frontendService")
+    public MsClient frontendMsClient(MessageSystem messageSystem) {
+        HandlersStore requestHandlerFrontendStore = new HandlersStoreImpl();
+        requestHandlerFrontendStore.addHandler(MessageType.GET_CLIENTS, new GetClientsResponseHandler());
+//        requestHandlerFrontendStore.addHandler(MessageType.SAVE_CLIENT, new SaveCClientsResponseHandler());
+        MsClient frontendMsClient = new MsClientImpl(FRONTEND_SERVICE_CLIENT_NAME, messageSystem, requestHandlerFrontendStore);
+        messageSystem.addClient(frontendMsClient);
 
-        return new MsClientImpl(DATABASE_SERVICE_CLIENT_NAME, messageSystem, requestHandlerDatabaseStore);
+        return frontendMsClient;
     }
+
+//    @Bean
+//    public MsClient databaseMsClient(
+//            MessageSystem messageSystem,
+//            HandlersStore requestHandlerDatabaseStore) {
+//
+//        return new MsClientImpl(DATABASE_SERVICE_CLIENT_NAME, messageSystem, requestHandlerDatabaseStore);
+//    }
 
 }

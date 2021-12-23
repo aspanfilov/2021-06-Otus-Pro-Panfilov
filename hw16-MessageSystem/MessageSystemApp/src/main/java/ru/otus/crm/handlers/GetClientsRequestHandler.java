@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class GetClientsRequestHandler implements RequestHandler<> {
+public class GetClientsRequestHandler implements RequestHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(GetClientsRequestHandler.class);
 
