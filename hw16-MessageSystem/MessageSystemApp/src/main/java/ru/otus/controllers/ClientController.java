@@ -24,6 +24,8 @@ public class ClientController {
 
     private static final Logger logger = LoggerFactory.getLogger(ClientController.class);
 
+    зкш
+
     public ClientController(DBServiceClient clientService) {
 
         var messageSystem = new MessageSystemImpl();

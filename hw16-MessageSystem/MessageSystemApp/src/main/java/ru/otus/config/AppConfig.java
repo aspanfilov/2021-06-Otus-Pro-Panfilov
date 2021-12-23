@@ -3,6 +3,8 @@ package ru.otus.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.otus.crm.handlers.GetClientsRequestHandler;
+import ru.otus.crm.handlers.SaveClientRequestHandler;
+import ru.otus.crm.service.DBServiceClient;
 import ru.otus.crm.service.DbServiceClientImpl;
 import ru.otus.messagesystem.HandlersStore;
 import ru.otus.messagesystem.HandlersStoreImpl;
@@ -24,10 +26,12 @@ public class AppConfig {
     }
 
     @Bean
-    public HandlersStore requestHandlerDatabaseStore() {
+    public HandlersStore requestHandlerDatabaseStore(DBServiceClient dbServiceClient, MessageSystem messageSystem) {
         var requestHandlerDatabaseStore = new HandlersStoreImpl();
-        requestHandlerDatabaseStore.addHandler(MessageType.GET_CLIENTS, new GetClientsRequestHandler(new DbServiceClientImpl()));
-//        requestHandlerDatabaseStore.addHandler(MessageType.SAVE_CLIENT, new GetUserDataRequestHandler(new DBServiceImpl()));
+        requestHandlerDatabaseStore.addHandler(MessageType.GET_CLIENTS, new GetClientsRequestHandler(dbServiceClient));
+//        requestHandlerDatabaseStore.addHandler(MessageType.SAVE_CLIENT, new SaveClientRequestHandler(dbServiceClient));
+        var databaseMsClient = new MsClientImpl(DATABASE_SERVICE_CLIENT_NAME, messageSystem, requestHandlerDatabaseStore);
+        return databaseMsClient;
     }
 
     @Bean
