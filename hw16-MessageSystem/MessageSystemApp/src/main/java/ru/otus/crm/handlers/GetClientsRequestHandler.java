@@ -3,6 +3,7 @@ package ru.otus.crm.handlers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.crm.dto.ClientDto;
+import ru.otus.crm.dto.ClientListData;
 import ru.otus.crm.model.Client;
 import ru.otus.crm.service.DBServiceClient;
 import ru.otus.messagesystem.RequestHandler;
@@ -31,7 +32,8 @@ public class GetClientsRequestHandler implements RequestHandler {
             logger.info("get client list");
             List<Client> clientList = clientService.findAll();
             List<ClientDto> clientDtoList = clientList.stream().map(ClientDto::new).collect(Collectors.toList());
-            return Optional.of(MessageBuilder.buildReplyMessage(msg, (T) clientDtoList));
+            ClientListData clientListData = new ClientListData(clientDtoList);
+            return Optional.of(MessageBuilder.buildReplyMessage(msg, (T) clientListData));
         } catch (Exception e) {
             logger.info("error: get client list", e);
             return Optional.empty();

@@ -7,8 +7,8 @@ const connect = () => {
         stompClient.subscribe('/topic/response', (message) => {
             $("#clients").html("");
             let clients = JSON.parse(message.body);
-            for (var i = 0; i < clients.clientDtoList.length; i++) {
-                showClient(clients.clientDtoList[i]);
+            for (var i = 0; i < clients.clientList.length; i++) {
+                showClient(clients.clientList[i]);
             }
         });
         clientList();

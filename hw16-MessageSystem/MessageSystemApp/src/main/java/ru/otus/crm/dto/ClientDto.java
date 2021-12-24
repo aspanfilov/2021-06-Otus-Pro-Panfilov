@@ -4,6 +4,7 @@ import org.springframework.data.annotation.PersistenceConstructor;
 import ru.otus.crm.model.Address;
 import ru.otus.crm.model.Client;
 import ru.otus.crm.model.Phone;
+import ru.otus.messagesystem.client.ResultDataType;
 
 import java.util.Set;
 

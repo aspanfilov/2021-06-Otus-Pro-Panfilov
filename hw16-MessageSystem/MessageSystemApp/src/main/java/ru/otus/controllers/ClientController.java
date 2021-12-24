@@ -49,7 +49,7 @@ public class ClientController {
                 databaseMsClient.getName(),
                 null,
                 MessageType.GET_CLIENTS,
-                clientDtoList -> messagingTemplate.convertAndSend("/topic/response", clientDtoList));
+                clientListData -> messagingTemplate.convertAndSend("/topic/response", clientListData));
         frontendMsClient.sendMessage(outMsg);
     }
 
