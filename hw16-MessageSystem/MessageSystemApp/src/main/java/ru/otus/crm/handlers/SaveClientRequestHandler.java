@@ -7,6 +7,7 @@ import ru.otus.crm.service.DBServiceClient;
 import ru.otus.messagesystem.RequestHandler;
 import ru.otus.messagesystem.client.ResultDataType;
 import ru.otus.messagesystem.message.Message;
+import ru.otus.messagesystem.message.MessageBuilder;
 
 import java.util.Optional;
 
@@ -26,7 +27,7 @@ public class SaveClientRequestHandler implements RequestHandler {
             logger.info("save client");
             ClientData clientData = (ClientData) msg.getData();
             this.dbServiceClient.save(clientData.toClient());
-            return Optional.empty();
+            return Optional.of(MessageBuilder.buildReplyMessage(msg, (T) clientData));
         } catch (Exception e) {
             logger.info("error: save client");
             return Optional.empty();

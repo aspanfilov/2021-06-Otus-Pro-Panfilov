@@ -258,16 +258,6 @@ public class ClientData implements ResultDataType {
         return phonesView.toString();
     }
 
-//    @Override
-//    public String toString() {
-//        return "ClientData{" +
-//                "id=" + id +
-//                ", name='" + name + '\'' +
-//                ", addressView='" + addressView + '\'' +
-//                ", phonesView='" + phonesView + '\'' +
-//                '}';
-
-
     @Override
     public String toString() {
         return "ClientData{" +

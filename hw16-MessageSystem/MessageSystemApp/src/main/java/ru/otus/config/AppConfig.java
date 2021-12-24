@@ -30,6 +30,7 @@ public class AppConfig {
         HandlersStore requestHandlerDatabaseStore = new HandlersStoreImpl();
         requestHandlerDatabaseStore.addHandler(MessageType.GET_CLIENTS, new GetClientsRequestHandler(dbServiceClient));
         requestHandlerDatabaseStore.addHandler(MessageType.SAVE_CLIENT, new SaveClientRequestHandler(dbServiceClient));
+
         MsClient databaseMsClient = new MsClientImpl(DATABASE_SERVICE_CLIENT_NAME, messageSystem, requestHandlerDatabaseStore);
         messageSystem.addClient(databaseMsClient);
 
@@ -39,8 +40,10 @@ public class AppConfig {
     @Bean("frontendService")
     public MsClient frontendMsClient(MessageSystem messageSystem) {
         HandlersStore requestHandlerFrontendStore = new HandlersStoreImpl();
-        requestHandlerFrontendStore.addHandler(MessageType.GET_CLIENTS, new ClientResponseHandler());
-        requestHandlerFrontendStore.addHandler(MessageType.SAVE_CLIENT, new ClientResponseHandler());
+        ClientResponseHandler clientResponseHandler = new ClientResponseHandler();
+        requestHandlerFrontendStore.addHandler(MessageType.GET_CLIENTS, clientResponseHandler);
+        requestHandlerFrontendStore.addHandler(MessageType.SAVE_CLIENT, clientResponseHandler);
+
         MsClient frontendMsClient = new MsClientImpl(FRONTEND_SERVICE_CLIENT_NAME, messageSystem, requestHandlerFrontendStore);
         messageSystem.addClient(frontendMsClient);
 

@@ -38,7 +38,13 @@ public class ClientController {
                 databaseMsClient.getName(),
                 new ClientListData(),
                 MessageType.GET_CLIENTS,
-                responseMsg -> simpMessagingTemplate.convertAndSend("/topic/response", responseMsg));
+                responseMsg -> {
+                    logger.info("CALLBACK");
+                    simpMessagingTemplate.convertAndSend(
+                            "/topic/response",
+                            responseMsg.getClientList());
+
+                });
         frontendMsClient.sendMessage(outMsg);
     }
 
@@ -49,7 +55,10 @@ public class ClientController {
                 databaseMsClient.getName(),
                 clientData,
                 MessageType.SAVE_CLIENT,
-                responseMsg -> clients());
+                responseMsg -> {
+                    logger.info("CALLBACK: REDIRECT TO CLIENTS()");
+                    clients();
+                });
         frontendMsClient.sendMessage(outMsg);
     }
 
