@@ -8,9 +8,9 @@ import ru.otus.messagesystem.message.Message;
 
 import java.util.Optional;
 
-public class GetClientsResponseHandler implements RequestHandler {
+public class ClientResponseHandler implements RequestHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(GetClientsResponseHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ClientResponseHandler.class);
 
     @Override
     public <T extends ResultDataType> Optional<Message<T>> handle(Message<T> msg) {

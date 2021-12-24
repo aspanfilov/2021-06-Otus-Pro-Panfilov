@@ -3,10 +3,9 @@ package ru.otus.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.otus.crm.handlers.GetClientsRequestHandler;
-import ru.otus.crm.handlers.GetClientsResponseHandler;
+import ru.otus.crm.handlers.ClientResponseHandler;
 import ru.otus.crm.handlers.SaveClientRequestHandler;
 import ru.otus.crm.service.DBServiceClient;
-import ru.otus.crm.service.DbServiceClientImpl;
 import ru.otus.messagesystem.HandlersStore;
 import ru.otus.messagesystem.HandlersStoreImpl;
 import ru.otus.messagesystem.MessageSystem;
@@ -30,7 +29,7 @@ public class AppConfig {
     public MsClient databaseMsClient(MessageSystem messageSystem, DBServiceClient dbServiceClient) {
         HandlersStore requestHandlerDatabaseStore = new HandlersStoreImpl();
         requestHandlerDatabaseStore.addHandler(MessageType.GET_CLIENTS, new GetClientsRequestHandler(dbServiceClient));
-//        requestHandlerDatabaseStore.addHandler(MessageType.SAVE_CLIENT, new SaveClientRequestHandler(dbServiceClient));
+        requestHandlerDatabaseStore.addHandler(MessageType.SAVE_CLIENT, new SaveClientRequestHandler(dbServiceClient));
         MsClient databaseMsClient = new MsClientImpl(DATABASE_SERVICE_CLIENT_NAME, messageSystem, requestHandlerDatabaseStore);
         messageSystem.addClient(databaseMsClient);
 
@@ -40,8 +39,8 @@ public class AppConfig {
     @Bean("frontendService")
     public MsClient frontendMsClient(MessageSystem messageSystem) {
         HandlersStore requestHandlerFrontendStore = new HandlersStoreImpl();
-        requestHandlerFrontendStore.addHandler(MessageType.GET_CLIENTS, new GetClientsResponseHandler());
-//        requestHandlerFrontendStore.addHandler(MessageType.SAVE_CLIENT, new SaveCClientsResponseHandler());
+        requestHandlerFrontendStore.addHandler(MessageType.GET_CLIENTS, new ClientResponseHandler());
+        requestHandlerFrontendStore.addHandler(MessageType.SAVE_CLIENT, new ClientResponseHandler());
         MsClient frontendMsClient = new MsClientImpl(FRONTEND_SERVICE_CLIENT_NAME, messageSystem, requestHandlerFrontendStore);
         messageSystem.addClient(frontendMsClient);
 

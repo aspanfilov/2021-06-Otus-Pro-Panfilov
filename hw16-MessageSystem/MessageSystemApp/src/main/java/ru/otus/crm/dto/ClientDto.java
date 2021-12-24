@@ -8,7 +8,7 @@ import ru.otus.messagesystem.client.ResultDataType;
 
 import java.util.Set;
 
-public class ClientDto {
+public class ClientDto implements ResultDataType{
 
     private Long id;
     private String name;
