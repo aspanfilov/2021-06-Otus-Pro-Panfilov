@@ -23,8 +23,8 @@ public class ClientController {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     @Autowired
-    public ClientController(@Qualifier("frontendService") MsClient frontendMsClient,
-                            @Qualifier("databaseService") MsClient databaseMsClient,
+    public ClientController(@Qualifier("frontendMessageService") MsClient frontendMsClient,
+                            @Qualifier("databaseMessageClient") MsClient databaseMsClient,
                             SimpMessagingTemplate simpMessagingTemplate) {
         this.frontendMsClient = frontendMsClient;
         this.databaseMsClient = databaseMsClient;
@@ -34,7 +34,7 @@ public class ClientController {
     @MessageMapping("/clients")
     public void clients() {
         logger.info("get client list");
-        Message outMsg = frontendMsClient.produceMessage(
+        Message<ClientListData> outMsg = frontendMsClient.produceMessage(
                 databaseMsClient.getName(),
                 new ClientListData(),
                 MessageType.GET_CLIENTS,
@@ -51,7 +51,7 @@ public class ClientController {
     @MessageMapping("/createClient")
     public void createClient(ClientData clientData) {
         logger.info("create client by DTO {}", clientData);
-        Message outMsg = frontendMsClient.produceMessage(
+        Message<ClientData> outMsg = frontendMsClient.produceMessage(
                 databaseMsClient.getName(),
                 clientData,
                 MessageType.SAVE_CLIENT,
