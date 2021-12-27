@@ -4,7 +4,7 @@ const connect = () => {
     stompClient = Stomp.over(new SockJS('/websocket'));
     stompClient.connect({}, (frame) => {
         console.log('Connected: ' + frame);
-        stompClient.subscribe('/topic/response', (message) => {
+        stompClient.subscribe('/topic/response/clients', (message) => {
             $("#clients").html("");
             let clients = JSON.parse(message.body);
             for (var i = 0; i < clients.length; i++) {
@@ -18,6 +18,16 @@ const connect = () => {
 const clientList = () => stompClient.send("/app/clients", {}, {})
 
 const createClient = () => {
+    stompClient.subscribe('/topic/response/createClient', (message) => {
+        clientList();
+    });
+    stompClient.subscribe('/topic/response/clients', (message) => {
+        $("#clients").html("");
+        let clients = JSON.parse(message.body);
+        for (var i = 0; i < clients.length; i++) {
+            showClient(clients[i]);
+        }
+    });
     stompClient.send("/app/createClient", {}, JSON.stringify({
         'name': $("#nameTextBox").val(),
         'addressCountry': $("#addressCountryTextBox").val(),
@@ -28,7 +38,6 @@ const createClient = () => {
         'addressApartmentNumber': $("#addressApartmentNumberTextBox").val(),
         'phoneNumber': $("#phoneNumberTextBox").val()
     }));
-
 }
 
 const showClient = (client) => $("#clients")

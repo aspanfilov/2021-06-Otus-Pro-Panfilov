@@ -39,7 +39,7 @@ public class MsServiceClient {
                 new ClientListData(),
                 MessageType.GET_CLIENTS,
                 responseMsg -> {
-                    logger.info("CALLBACK");
+                    logger.info("CALLBACK: Get Clients");
                     this.simpMessagingTemplate.convertAndSend(
                             responseDestination,
                             responseMsg.getClientList());
@@ -48,14 +48,16 @@ public class MsServiceClient {
         this.frontendMsClient.sendMessage(outMsg);
     }
 
-    public void produceAndSendMessageSaveClient(ClientData clientData) {
+    public void produceAndSendMessageSaveClient(String responseDestination, ClientData clientData) {
         Message<ClientData> outMsg = frontendMsClient.produceMessage(
                 databaseMsClient.getName(),
                 clientData,
                 MessageType.SAVE_CLIENT,
                 responseMsg -> {
-                    logger.info("CALLBACK: REDIRECT TO CLIENTS()");
-                    clients();
+                    logger.info("CALLBACK: Save Client");
+                    this.simpMessagingTemplate.convertAndSend(
+                            responseDestination,
+                            responseMsg);
                 });
         frontendMsClient.sendMessage(outMsg);
     }

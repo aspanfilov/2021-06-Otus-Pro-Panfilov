@@ -41,15 +41,15 @@ public class ClientController {
     @MessageMapping("/clients")
     public void clients() {
         logger.info("get client list");
-        this.msServiceClient.produceAndSendMessageGetClients("/topic/response");
+        this.msServiceClient.produceAndSendMessageGetClients("/topic/response/clients");
     }
 
     @MessageMapping("/createClient")
     public void createClient(ClientData clientData) {
         logger.info("create client by DTO {}", clientData);
-        this.msServiceClient.produceAndSendMessageSaveClient(clientData);
-
+        this.msServiceClient.produceAndSendMessageSaveClient("/topic/response/createClient", clientData);
     }
+
 
 //    @MessageMapping("/clients")
 //    public void clients() {
