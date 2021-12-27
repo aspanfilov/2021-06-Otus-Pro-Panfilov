@@ -7,6 +7,5 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Main {
     public static void main(String[] args) {
         var context = SpringApplication.run(Main.class, args);
-//        context.getBean("actionDemo", ActionDemo.class).action();
     }
 }

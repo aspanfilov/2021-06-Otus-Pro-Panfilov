@@ -1,7 +1,9 @@
 package ru.otus.config;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import ru.otus.crm.handlers.GetClientsRequestHandler;
 import ru.otus.crm.handlers.ClientResponseHandler;
 import ru.otus.crm.handlers.SaveClientRequestHandler;
@@ -20,16 +22,55 @@ public class AppConfig {
     private static final String FRONTEND_SERVICE_CLIENT_NAME = "frontendService";
     private static final String DATABASE_SERVICE_CLIENT_NAME = "databaseService";
 
-    @Bean
+    @Bean(destroyMethod = "dispose")
     public MessageSystem messageSystem() {
         return new MessageSystemImpl();
     }
 
-    @Bean("databaseService")
-    public MsClient databaseMsClient(MessageSystem messageSystem, DBServiceClient dbServiceClient) {
+    @Bean
+    public GetClientsRequestHandler getClientsRequestHandler(DBServiceClient dbServiceClient) {
+        return new GetClientsRequestHandler(dbServiceClient);
+    }
+
+    @Bean
+    public SaveClientRequestHandler saveClientRequestHandler(DBServiceClient dbServiceClient) {
+        return new SaveClientRequestHandler(dbServiceClient);
+    }
+
+    @Bean("requestHandlerDatabaseStore")
+    public HandlersStore handlersStore(
+            GetClientsRequestHandler getClientsRequestHandler,
+            SaveClientRequestHandler saveClientRequestHandler) {
+
         HandlersStore requestHandlerDatabaseStore = new HandlersStoreImpl();
-        requestHandlerDatabaseStore.addHandler(MessageType.GET_CLIENTS, new GetClientsRequestHandler(dbServiceClient));
-        requestHandlerDatabaseStore.addHandler(MessageType.SAVE_CLIENT, new SaveClientRequestHandler(dbServiceClient));
+        requestHandlerDatabaseStore.addHandler(MessageType.GET_CLIENTS, getClientsRequestHandler);
+        requestHandlerDatabaseStore.addHandler(MessageType.SAVE_CLIENT, saveClientRequestHandler);
+
+        return requestHandlerDatabaseStore;
+    }
+
+
+    @Bean
+    public ClientResponseHandler clientResponseHandler() {
+        return new ClientResponseHandler();
+    }
+
+    @Bean("requestHandlerFrontendStore")
+    public HandlersStore handlersStore(
+            ClientResponseHandler clientResponseHandler) {
+
+        HandlersStore requestHandlerFrontendStore = new HandlersStoreImpl();
+        requestHandlerFrontendStore.addHandler(MessageType.GET_CLIENTS, clientResponseHandler);
+        requestHandlerFrontendStore.addHandler(MessageType.SAVE_CLIENT, clientResponseHandler);
+
+        return requestHandlerFrontendStore;
+    }
+
+
+    @Bean("databaseMessageClient")
+    public MsClient databaseMsClient(
+            MessageSystem messageSystem,
+            @Qualifier("requestHandlerDatabaseStore") HandlersStore requestHandlerDatabaseStore) {
 
         MsClient databaseMsClient = new MsClientImpl(DATABASE_SERVICE_CLIENT_NAME, messageSystem, requestHandlerDatabaseStore);
         messageSystem.addClient(databaseMsClient);
@@ -37,25 +78,15 @@ public class AppConfig {
         return databaseMsClient;
     }
 
-    @Bean("frontendService")
-    public MsClient frontendMsClient(MessageSystem messageSystem) {
-        HandlersStore requestHandlerFrontendStore = new HandlersStoreImpl();
-        ClientResponseHandler clientResponseHandler = new ClientResponseHandler();
-        requestHandlerFrontendStore.addHandler(MessageType.GET_CLIENTS, clientResponseHandler);
-        requestHandlerFrontendStore.addHandler(MessageType.SAVE_CLIENT, clientResponseHandler);
+    @Bean("frontendMessageService")
+    public MsClient frontendMsClient(
+            MessageSystem messageSystem,
+            @Qualifier("requestHandlerFrontendStore") HandlersStore requestHandlerFrontendStore) {
 
         MsClient frontendMsClient = new MsClientImpl(FRONTEND_SERVICE_CLIENT_NAME, messageSystem, requestHandlerFrontendStore);
         messageSystem.addClient(frontendMsClient);
 
         return frontendMsClient;
     }
-
-//    @Bean
-//    public MsClient databaseMsClient(
-//            MessageSystem messageSystem,
-//            HandlersStore requestHandlerDatabaseStore) {
-//
-//        return new MsClientImpl(DATABASE_SERVICE_CLIENT_NAME, messageSystem, requestHandlerDatabaseStore);
-//    }
 
 }
