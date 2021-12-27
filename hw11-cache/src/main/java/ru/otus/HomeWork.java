@@ -3,12 +3,15 @@ package ru.otus;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.otus.cachehw.HwCache;
+import ru.otus.cachehw.MyCache;
 import ru.otus.core.repository.DataTemplateJdbc;
 import ru.otus.core.repository.executor.DbExecutorImpl;
 import ru.otus.core.sessionmanager.TransactionRunnerJdbc;
 import ru.otus.crm.datasource.DriverManagerDataSource;
 import ru.otus.crm.model.Client;
 import ru.otus.crm.model.Manager;
+import ru.otus.crm.service.DBServiceClientCachedImpl;
 import ru.otus.crm.service.DbServiceClientImpl;
 import ru.otus.crm.service.DbServiceManagerImpl;
 import ru.otus.mapper.EntityClassMetaData;
@@ -32,6 +35,8 @@ public class HomeWork {
         var transactionRunner = new TransactionRunnerJdbc(dataSource);
         var dbExecutor = new DbExecutorImpl();
 
+        HwCache<String, Client> clientCache = new MyCache<>();
+
 // Работа с клиентом
         EntityClassMetaData<Client> entityClassMetaDataClient  = new EntityClassMetaDataImpl<>(Client.class);
         EntitySQLMetaData entitySQLMetaDataClient = new EntitySQLMetaDataImpl<>(entityClassMetaDataClient);
@@ -41,7 +46,9 @@ public class HomeWork {
                 entityClassMetaDataClient); //реализация DataTemplate, универсальная
 
 // Код дальше должен остаться
-        var dbServiceClient = new DbServiceClientImpl(transactionRunner, dataTemplateClient);
+//        var dbServiceClient = new DbServiceClientImpl(transactionRunner, dataTemplateClient);
+        var dbServiceClient = new DBServiceClientCachedImpl(dataTemplateClient, clientCache, transactionRunner);
+
         dbServiceClient.saveClient(new Client("dbServiceFirst"));
 //
         var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
