@@ -3,16 +3,11 @@ package ru.otus.controllers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import ru.otus.crm.dto.ClientData;
-import ru.otus.crm.dto.ClientListData;
 import ru.otus.crm.service.MsServiceClient;
-import ru.otus.messagesystem.client.MsClient;
-import ru.otus.messagesystem.message.Message;
-import ru.otus.messagesystem.message.MessageType;
+import ru.otus.crm.service.MsServiceClientImpl;
 
 @Controller
 public class ClientController {
@@ -23,7 +18,6 @@ public class ClientController {
 
     @Autowired
     public ClientController(MsServiceClient msServiceClient) {
-
         this.msServiceClient = msServiceClient;
     }
 
