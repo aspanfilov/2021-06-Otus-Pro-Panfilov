@@ -35,8 +35,6 @@ public class HomeWork {
         var transactionRunner = new TransactionRunnerJdbc(dataSource);
         var dbExecutor = new DbExecutorImpl();
 
-        HwCache<String, Client> clientCache = new MyCache<>();
-
 // Работа с клиентом
         EntityClassMetaData<Client> entityClassMetaDataClient  = new EntityClassMetaDataImpl<>(Client.class);
         EntitySQLMetaData entitySQLMetaDataClient = new EntitySQLMetaDataImpl<>(entityClassMetaDataClient);
@@ -46,13 +44,13 @@ public class HomeWork {
                 entityClassMetaDataClient); //реализация DataTemplate, универсальная
 
 // Код дальше должен остаться
-//        var dbServiceClient = new DbServiceClientImpl(transactionRunner, dataTemplateClient);
-        var dbServiceClient = new DBServiceClientCachedImpl(dataTemplateClient, clientCache, transactionRunner);
+        var dbServiceClient = new DbServiceClientImpl(transactionRunner, dataTemplateClient);
+        var dbServiceClientCached = new DBServiceClientCachedImpl(dbServiceClient);
 
-        dbServiceClient.saveClient(new Client("dbServiceFirst"));
+        dbServiceClientCached.saveClient(new Client("dbServiceFirst"));
 //
-        var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
-        var clientSecondSelected = dbServiceClient.getClient(clientSecond.getId())
+        var clientSecond = dbServiceClientCached.saveClient(new Client("dbServiceSecond"));
+        var clientSecondSelected = dbServiceClientCached.getClient(clientSecond.getId())
                 .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecond.getId()));
         log.info("clientSecondSelected:{}", clientSecondSelected);
 
