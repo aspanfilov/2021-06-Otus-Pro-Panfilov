@@ -47,8 +47,10 @@ public class HomeWork {
                 entitySQLMetaDataClient,
                 entityClassMetaDataClient); //реализация DataTemplate, универсальная
 
+        HwCache<String, Client> cache = new MyCache<>();
+
         var dbServiceClient = new DbServiceClientImpl(transactionRunner, dataTemplateClient);
-        var dbServiceClientCached = new DBServiceClientCachedImpl(dbServiceClient);
+        var dbServiceClientCached = new DBServiceClientCachedImpl(dbServiceClient, cache);
 
         var testExecTimeOriginal = getTestExecutionTime(dbServiceClient, 10);
         var testExecTimeCached = getTestExecutionTime(dbServiceClientCached, 10);

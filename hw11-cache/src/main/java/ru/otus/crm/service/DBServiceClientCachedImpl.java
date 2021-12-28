@@ -13,17 +13,17 @@ public class DBServiceClientCachedImpl extends DBServiceClientDecorator{
 
     private static final Logger log = LoggerFactory.getLogger(DBServiceClientCachedImpl.class);
 
-    private HwCache<String, Client> cache;
+    private final HwCache<String, Client> cache;
 
-    public DBServiceClientCachedImpl(DBServiceClient dbServiceClient) {
+    public DBServiceClientCachedImpl(DBServiceClient dbServiceClient, HwCache<String, Client> cache) {
         super(dbServiceClient);
-        this.cache = new MyCache<>();
+        this.cache = cache;
     }
 
     @Override
     public Client saveClient(Client client) {
         Client savedClient = this.dbServiceClient.saveClient(client);
-        this.cache.put(savedClient.getId().toString(), savedClient);
+        this.cache.put(getKey(savedClient), savedClient);
         log.info("client saved in cache");
         return savedClient;
     }
@@ -36,12 +36,16 @@ public class DBServiceClientCachedImpl extends DBServiceClientDecorator{
             return Optional.of(clientFromCache);
         }
         Optional<Client> clientFromDB = this.dbServiceClient.getClient(id);
-        clientFromDB.ifPresent(client -> this.cache.put(client.getId().toString(), client));
+        clientFromDB.ifPresent(client -> this.cache.put(getKey(client), client));
         return clientFromDB;
     }
 
     @Override
     public List<Client> findAll() {
         return dbServiceClient.findAll();
+    }
+
+    private String getKey(Client client) {
+        return client.getId().toString();
     }
 }
