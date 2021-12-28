@@ -37,3 +37,7 @@ out
 *.ipr
 *.idea
 .idea
+.idea/compiler.xml
+
+
+
