@@ -41,6 +41,12 @@ public class MyCache<K, V> implements HwCache<K, V> {
     }
 
     private void notifyListeners(K key, V value, String action) {
-        this.listeners.forEach(listener -> listener.notify(key, value, action));
+        this.listeners.forEach(listener -> {
+            try {
+                listener.notify(key, value, action);
+            } catch (Exception e) {
+                //логирование исключения
+            }
+        });
     }
 }
