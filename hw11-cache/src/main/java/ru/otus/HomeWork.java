@@ -11,6 +11,7 @@ import ru.otus.core.sessionmanager.TransactionRunnerJdbc;
 import ru.otus.crm.datasource.DriverManagerDataSource;
 import ru.otus.crm.model.Client;
 import ru.otus.crm.model.Manager;
+import ru.otus.crm.service.DBServiceClient;
 import ru.otus.crm.service.DBServiceClientCachedImpl;
 import ru.otus.crm.service.DbServiceClientImpl;
 import ru.otus.crm.service.DbServiceManagerImpl;
@@ -20,6 +21,9 @@ import ru.otus.mapper.EntitySQLMetaData;
 import ru.otus.mapper.EntitySQLMetaDataImpl;
 
 import javax.sql.DataSource;
+import java.sql.Time;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class HomeWork {
     private static final String URL = "jdbc:postgresql://localhost:5430/demoDB";
@@ -43,33 +47,31 @@ public class HomeWork {
                 entitySQLMetaDataClient,
                 entityClassMetaDataClient); //реализация DataTemplate, универсальная
 
-// Код дальше должен остаться
         var dbServiceClient = new DbServiceClientImpl(transactionRunner, dataTemplateClient);
         var dbServiceClientCached = new DBServiceClientCachedImpl(dbServiceClient);
 
-        dbServiceClientCached.saveClient(new Client("dbServiceFirst"));
-//
-        var clientSecond = dbServiceClientCached.saveClient(new Client("dbServiceSecond"));
-        var clientSecondSelected = dbServiceClientCached.getClient(clientSecond.getId())
-                .orElseThrow(() -> new RuntimeException("Client not found, id:" + clientSecond.getId()));
-        log.info("clientSecondSelected:{}", clientSecondSelected);
+        var testExecTimeOriginal = getTestExecutionTime(dbServiceClient, 10);
+        var testExecTimeCached = getTestExecutionTime(dbServiceClientCached, 10);
 
-// Сделайте тоже самое с классом Manager (для него надо сделать свою таблицу)
+        log.info("Время выполнения запроса к базе: {}", testExecTimeOriginal);
+        log.info("Время выполнения запроса к кэшу: {}", testExecTimeCached);
+        log.info("Разница: {}", testExecTimeOriginal-testExecTimeCached);
 
-        EntityClassMetaData<Manager> entityClassMetaDataManager = new EntityClassMetaDataImpl<>(Manager.class);
-        EntitySQLMetaData entitySQLMetaDataManager = new EntitySQLMetaDataImpl<>(entityClassMetaDataManager);
-        var dataTemplateManager = new DataTemplateJdbc<>(
-                dbExecutor,
-                entitySQLMetaDataManager,
-                entityClassMetaDataManager);
+    }
 
-        var dbServiceManager = new DbServiceManagerImpl(transactionRunner, dataTemplateManager);
-        dbServiceManager.saveManager(new Manager("ManagerFirst"));
+    private static long getTestExecutionTime(DBServiceClient dbServiceClient, int count) {
 
-        var managerSecond = dbServiceManager.saveManager(new Manager("ManagerSecond"));
-        var managerSecondSelected = dbServiceManager.getManager(managerSecond.getNo())
-                .orElseThrow(() -> new RuntimeException("Manager not found, id:" + managerSecond.getNo()));
-        log.info("managerSecondSelected:{}", managerSecondSelected);
+        var clientFirst = dbServiceClient.saveClient(new Client("dbServiceFirst"));
+        var clientSecond = dbServiceClient.saveClient(new Client("dbServiceSecond"));
+
+        var startTime = new Date();
+        for (int i = 0; i < count; i++) {
+            var foundClientFirst = dbServiceClient.getClient(clientFirst.getId());
+            var foundClientSecond = dbServiceClient.getClient(clientSecond.getId());
+        }
+        var finishTime = new Date();
+
+        return finishTime.getTime() - startTime.getTime();
     }
 
     private static void flywayMigrations(DataSource dataSource) {
