@@ -2,10 +2,20 @@ rootProject.name = 'otusJava'
 include 'hw01-gradle'
 include 'hw02-generics'
 include 'hw03-reflection'
-include 'hw04-gc'
-include 'hw05-aop'
-include 'hw06-atm'
-include 'hw08-io'
-//include 'hw09-jdbc'
-//include 'hw10-hibernate'
-include 'hw11-cache'
+include 'ho04-gc'
+include 'ho05-aop'
+include 'ho06-atm'
+
+include 'ho08-io'
+
+include 'hw10-hibernate'
+
+include 'hw12-webserver'
+
+//include 'hw14-SpringBoot'
+include 'hw15-multithreading'
+
+include 'hw16-MessageSystem:MessageSystem'
+include 'hw16-MessageSystem:MessageSystemApp'
+
+include 'hw17-gRPC'

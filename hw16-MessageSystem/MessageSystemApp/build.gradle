@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.5.5'
+}
+
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
+
+dependencies {
+    dependencies {
+        implementation project(':hw16-MessageSystem:MessageSystem')
+        
+        implementation 'ch.qos.logback:logback-classic'
+        implementation 'org.flywaydb:flyway-core'
+        implementation 'org.postgresql:postgresql'
+        implementation 'com.google.code.findbugs:jsr305'
+
+        implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+
+        implementation("org.springframework.boot:spring-boot-starter-web")
+        implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+        implementation("org.springframework.boot:spring-boot-starter-test")
+
+        implementation("org.springframework.boot:spring-boot-starter-websocket")
+
+        implementation("org.webjars:webjars-locator-core")
+        implementation("org.webjars:sockjs-client")
+        implementation("org.webjars:stomp-websocket")
+        implementation("org.webjars:bootstrap")
+    }
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.with {
+        encoding = 'UTF-8'
+    }
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MessageSystem App</title>
+
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/main.css" rel="stylesheet">
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="/app.js"></script>
+</head>
+<body>
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+<div id="main-content" class="container">
+
+    <h4>New client</h4>
+    <p>
+        <input id="nameTextBox" type="text" placeholder="Client Name (mandatory)">
+        <input id="phoneNumberTextBox" size="20" placeholder="Phone">
+    <p>
+        <input id="addressCountryTextBox" type="text" size="20" placeholder="Country (mandatory)">
+        <input id="addressCityTextBox" size="20" placeholder="City">
+        <input id="addressStreetTextBox" size="20" placeholder="Street">
+    <p>
+        <input id="addressHouseNumberTextBox" size="20" placeholder="House (mandatory)">
+        <input id="addressBuildingNumberTextBox" size="20" placeholder="Building">
+        <input id="addressApartmentNumberTextBox" size="20" placeholder="Apartment">
+    </p>
+    <button class="btn btn-default" id="create" cellpadding="10" border="1" type="submit">CREATE</button>
+
+    <p></p>
+
+    <h4>Clients</h4>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped" id="conversation" cellpadding="10" border="1">
+                <thead>
+                </thead>
+                <tbody id="clients"></tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
