@@ -1,5 +1,7 @@
 package ru.otus;
 
+import java.util.Calendar;
+
 public class HomeWork {
 
     /*
@@ -12,6 +14,9 @@ public class HomeWork {
      */
 
     public static void main(String[] args) {
+
+        System.out.println("sec " + Calendar.getInstance().get(Calendar.SECOND));
+
         /*
            по аналогии с Demo.class
            из элеменов "to do" создать new ComplexProcessor и обработать сообщение
