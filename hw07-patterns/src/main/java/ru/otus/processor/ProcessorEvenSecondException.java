@@ -2,29 +2,27 @@ package ru.otus.processor;
 
 import ru.otus.model.Message;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Optional;
+import java.time.LocalDateTime;
 
 public class ProcessorEvenSecondException implements Processor{
 
-    private Date date;
+    private LocalDateTime dateTime;
 
-    public ProcessorEvenSecondException(Date date) {
-        this.date = date;
+    public ProcessorEvenSecondException() {
+    }
+
+    public ProcessorEvenSecondException(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
     @Override
     public Message process(Message message) {
 
-        if (this.date == null) {
-            this.date = Calendar.getInstance().getTime().;
+        if (this.dateTime == null) {
+            this.dateTime = LocalDateTime.now();
         }
 
-//        Calendar.getInstance().get
-
-        int currentSecond = Calendar.getInstance().get(Calendar.SECOND);
-        if (currentSecond % 2 == 0) {
+        if (this.dateTime.getSecond() % 2 == 0) {
             try {
                 throw new Exception("even second exception");
             } catch (Exception e) {
@@ -33,12 +31,12 @@ public class ProcessorEvenSecondException implements Processor{
 
         }
 
-        this.date = null;
+        this.dateTime = null;
 
         return message;
     }
 
-    public void setSecond(int second) {
-        this.second = second;
+    public void setDate(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 }

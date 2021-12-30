@@ -1,17 +1,20 @@
 package ru.otus.handler;
 
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.otus.model.Message;
 import ru.otus.listener.Listener;
 import ru.otus.processor.Processor;
+import ru.otus.processor.ProcessorEvenSecondException;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -93,6 +96,39 @@ class ComplexProcessorTest {
 
         //then
         verify(listener, times(1)).onUpdated(message);
+    }
+
+    @Test
+    @DisplayName("Тестируем процессор исключений в четную секунду")
+    void EvenSecondExceptionTest() {
+        //given
+        var message = new Message.Builder(1L).build();
+
+//        Processor processor1 = new ProcessorEvenSecondException(
+//                LocalDateTime.of(2021, 10, 10, 10, 10, 11));
+        Processor processor = new ProcessorEvenSecondException(
+                LocalDateTime.of(2021, 10, 10, 10, 10, 10));
+
+        var processors = List.of(processor);
+
+        var complexProcessor = new ComplexProcessor(processors, ex -> {
+//            throw new TestException(ex.getMessage());
+        });
+
+
+//        var a = Assertions.assertThatThrownBy(() -> complexProcessor.handle(message));
+//                .isInstanceOf(Exception.class);
+
+        assertThatExceptionOfType(Exception.class).isThrownBy(() -> complexProcessor.handle(message));
+
+
+
+        //when
+//        assertThatExceptionOfType(Exception.class).isThrownBy(() -> complexProcessor.handle(message));
+//        //then
+//        verify(processor1, times(1)).process(message);
+//        verify(processor2, times(1)).process(message);
+
     }
 
     private static class TestException extends RuntimeException {
