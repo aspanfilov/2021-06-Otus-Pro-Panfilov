@@ -6,6 +6,10 @@ import java.util.List;
 public class ObjectForMessage implements Cloneable{
     private List<String> data;
 
+    public ObjectForMessage() {
+        this.data = new ArrayList<>();
+    }
+
     public List<String> getData() {
         return data;
     }
