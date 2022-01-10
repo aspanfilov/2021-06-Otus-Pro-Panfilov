@@ -29,8 +29,8 @@ public class HomeWork {
          */
 
         List<Processor> processors = List.of(
-                new ProcessorSwapField11Field12());
-//                new ProcessorEvenSecondException());
+                new ProcessorSwapField11Field12(),
+                new ProcessorEvenSecondException());
 
         var complexProcessor = new ComplexProcessor(processors, ex -> {});
         var historyListener = new HistoryListener();
