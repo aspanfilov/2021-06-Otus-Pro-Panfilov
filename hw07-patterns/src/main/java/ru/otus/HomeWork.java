@@ -1,12 +1,12 @@
 package ru.otus;
 
 import ru.otus.handler.ComplexProcessor;
+import ru.otus.listener.homework.HistoryListener;
 import ru.otus.model.Message;
-import ru.otus.processor.Processor;
+import ru.otus.model.ObjectForMessage;
 import ru.otus.processor.ProcessorEvenSecondException;
+import ru.otus.processor.ProcessorSwapField11Field12;
 
-import java.time.LocalDateTime;
-import java.util.Calendar;
 import java.util.List;
 
 public class HomeWork {
@@ -22,22 +22,28 @@ public class HomeWork {
 
     public static void main(String[] args) {
 
-        var message = new Message.Builder(1L).build();
-
-//        Processor processor = new ProcessorEvenSecondException(
-//                LocalDateTime.of(2021, 10, 10, 10, 10, 11));
-        Processor processor = new ProcessorEvenSecondException(
-                LocalDateTime.of(2021, 10, 10, 10, 10, 10));
-
-        var processors = List.of(processor);
-        var complexProcessor = new ComplexProcessor(processors, ex -> {});
-        complexProcessor.handle(message);
-
-
-
         /*
            по аналогии с Demo.class
            из элеменов "to do" создать new ComplexProcessor и обработать сообщение
          */
+
+        var processors = List.of(
+                new ProcessorSwapField11Field12(),
+                new ProcessorEvenSecondException());
+
+        var complexProcessor = new ComplexProcessor(processors, ex -> {});
+        var historyListener = new HistoryListener();
+        complexProcessor.addListener(historyListener);
+
+        var message = new Message.Builder(1L)
+                .field1("field1")
+                .field11("field11")
+                .field12("field12")
+                .field13(new ObjectForMessage())
+                .build();
+
+        var result = complexProcessor.handle(message);
+        System.out.println("result: " + result);
+
     }
 }

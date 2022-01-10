@@ -114,6 +114,11 @@ public class Message {
                 field6, field7, field8, field9, field10, field11, field12, field13);
     }
 
+    public Builder toCloneBuilder() {
+        return new Builder(id, field1, field2, field3, field4, field5,
+                field6, field7, field8, field9, field10, field11, field12, field13.clone());
+    }
+
     @Override
     public String toString() {
         return "Message{" +

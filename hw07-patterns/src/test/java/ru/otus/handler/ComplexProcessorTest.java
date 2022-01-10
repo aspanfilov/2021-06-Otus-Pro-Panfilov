@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.otus.model.Message;
 import ru.otus.listener.Listener;
+import ru.otus.processor.EvenSecondException;
 import ru.otus.processor.Processor;
 import ru.otus.processor.ProcessorEvenSecondException;
 
@@ -99,35 +100,40 @@ class ComplexProcessorTest {
     }
 
     @Test
-    @DisplayName("Тестируем процессор исключений в четную секунду")
+    @DisplayName("Процессор исключений дает исключение в четную секунду")
     void EvenSecondExceptionTest() {
         //given
         var message = new Message.Builder(1L).build();
 
-//        Processor processor1 = new ProcessorEvenSecondException(
-//                LocalDateTime.of(2021, 10, 10, 10, 10, 11));
-        Processor processor = new ProcessorEvenSecondException(
+        Processor processorWithException = new ProcessorEvenSecondException(
                 LocalDateTime.of(2021, 10, 10, 10, 10, 10));
 
-        var processors = List.of(processor);
+        var processors = List.of(processorWithException);
 
         var complexProcessor = new ComplexProcessor(processors, ex -> {
-//            throw new TestException(ex.getMessage());
+            throw new TestException(ex.getMessage());
         });
 
+        assertThatExceptionOfType(TestException.class).isThrownBy(() -> complexProcessor.handle(message));
 
-//        var a = Assertions.assertThatThrownBy(() -> complexProcessor.handle(message));
-//                .isInstanceOf(Exception.class);
+    }
 
-        assertThatExceptionOfType(Exception.class).isThrownBy(() -> complexProcessor.handle(message));
+    @Test
+    @DisplayName("Процессор исключений не дает исключений в нечетную секунду")
+    void OddSecondNoExceptionTest() {
+        //given
+        var message = new Message.Builder(1L).build();
 
+        Processor processorOrdinary = new ProcessorEvenSecondException(
+                LocalDateTime.of(2021, 10, 10, 10, 10, 11));
 
+        var processors = List.of(processorOrdinary);
 
-        //when
-//        assertThatExceptionOfType(Exception.class).isThrownBy(() -> complexProcessor.handle(message));
-//        //then
-//        verify(processor1, times(1)).process(message);
-//        verify(processor2, times(1)).process(message);
+        var complexProcessor = new ComplexProcessor(processors, ex -> {
+            throw new TestException(ex.getMessage());
+        });
+
+        assertThatNoException().isThrownBy(() -> complexProcessor.handle(message));
 
     }
 

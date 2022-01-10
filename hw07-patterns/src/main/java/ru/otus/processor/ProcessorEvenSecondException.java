@@ -23,12 +23,7 @@ public class ProcessorEvenSecondException implements Processor{
         }
 
         if (this.dateTime.getSecond() % 2 == 0) {
-            try {
-                throw new Exception("even second exception");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
+            throw new RuntimeException("Even second exception");
         }
 
         this.dateTime = null;
