@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public class HistoryListener implements Listener, HistoryReader {
 
-    public HashMap<Long, Message> messages;
+    private final HashMap<Long, Message> messages;
 
     public HistoryListener() {
         this.messages = new HashMap<>();
@@ -16,7 +16,7 @@ public class HistoryListener implements Listener, HistoryReader {
 
     @Override
     public void onUpdated(Message msg) {
-        this.messages.put(msg.getId(), msg.toCloneBuilder().build());
+        this.messages.put(msg.getId(), msg.clone());
     }
 
     @Override
