@@ -9,6 +9,7 @@ import ru.otus.listener.Listener;
 import ru.otus.processor.EvenSecondException;
 import ru.otus.processor.Processor;
 import ru.otus.processor.ProcessorEvenSecondException;
+import ru.otus.processor.homework.DateTimeProvider;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -105,7 +106,7 @@ class ComplexProcessorTest {
         //given
         var message = new Message.Builder(1L).build();
 
-        Processor processorWithException = new ProcessorEvenSecondException(
+        Processor processorWithException = new ProcessorEvenSecondException(() ->
                 LocalDateTime.of(2021, 10, 10, 10, 10, 10));
 
         var processors = List.of(processorWithException);
@@ -124,7 +125,7 @@ class ComplexProcessorTest {
         //given
         var message = new Message.Builder(1L).build();
 
-        Processor processorOrdinary = new ProcessorEvenSecondException(
+        Processor processorOrdinary = new ProcessorEvenSecondException(() ->
                 LocalDateTime.of(2021, 10, 10, 10, 10, 11));
 
         var processors = List.of(processorOrdinary);

@@ -1,37 +1,24 @@
 package ru.otus.processor;
 
 import ru.otus.model.Message;
-
-import java.time.LocalDateTime;
+import ru.otus.processor.homework.DateTimeProvider;
 
 public class ProcessorEvenSecondException implements Processor{
 
-    private LocalDateTime dateTime;
+    private final DateTimeProvider dateTime;
 
-    public ProcessorEvenSecondException() {
-    }
-
-    public ProcessorEvenSecondException(LocalDateTime dateTime) {
+    public ProcessorEvenSecondException(DateTimeProvider dateTime) {
         this.dateTime = dateTime;
     }
 
     @Override
     public Message process(Message message) {
 
-        if (this.dateTime == null) {
-            this.dateTime = LocalDateTime.now();
-        }
-
-        if (this.dateTime.getSecond() % 2 == 0) {
+        if (this.dateTime.getDate().getSecond() % 2 == 0) {
             throw new RuntimeException("Even second exception");
         }
-
-        this.dateTime = null;
 
         return message;
     }
 
-    public void setDate(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
 }

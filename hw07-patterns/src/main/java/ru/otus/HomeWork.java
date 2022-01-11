@@ -8,6 +8,7 @@ import ru.otus.processor.Processor;
 import ru.otus.processor.ProcessorEvenSecondException;
 import ru.otus.processor.ProcessorSwapField11Field12;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class HomeWork {
@@ -30,7 +31,7 @@ public class HomeWork {
 
         List<Processor> processors = List.of(
                 new ProcessorSwapField11Field12(),
-                new ProcessorEvenSecondException());
+                new ProcessorEvenSecondException(LocalDateTime::now));
 
         var complexProcessor = new ComplexProcessor(processors, ex -> {});
         var historyListener = new HistoryListener();
