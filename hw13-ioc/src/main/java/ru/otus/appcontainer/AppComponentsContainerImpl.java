@@ -11,8 +11,10 @@ import java.util.stream.Collectors;
 
 public class AppComponentsContainerImpl implements AppComponentsContainer {
 
-//    private final List<Object> appComponents = new ArrayList<>();
+    private final List<Object> appComponents = new ArrayList<>();
     private final Map<String, Object> appComponentsByName = new HashMap<>();
+    private final Map<String, Object> appComponentsByClass = new HashMap<>();
+    private final Map<String, Object> appComponentsByInterface = new HashMap<>();
 
     public AppComponentsContainerImpl(Class<?> initialConfigClass) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
         processConfig(initialConfigClass);
@@ -22,7 +24,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         checkConfigClass(configClass);
         // You code here...
 
-        Object obj = configClass.getConstructor().newInstance();
+        Object configObject = configClass.getConstructor().newInstance();
 
         List<Method> methods = Arrays.stream(configClass.getDeclaredMethods())
                 .filter(method -> method.isAnnotationPresent(AppComponent.class))
@@ -30,7 +32,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
                 .collect(Collectors.toList());
 
         for (Method method : methods) {
-            Object component = method.invoke(obj, getComponentsByTypes(method.getParameterTypes()));
+            Object component = method.invoke(configObject, getComponentsByTypes(method.getParameterTypes()));
 
             this.appComponentsByName.put(method.getAnnotation(AppComponent.class).name(), component);
             this.appComponentsByName.put(component.getClass().getSimpleName(), component);
