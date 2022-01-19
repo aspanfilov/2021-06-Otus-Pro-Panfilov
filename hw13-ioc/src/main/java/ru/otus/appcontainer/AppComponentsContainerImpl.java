@@ -5,10 +5,10 @@ import ru.otus.appcontainer.api.AppComponent;
 import ru.otus.appcontainer.api.AppComponentsContainer;
 import ru.otus.appcontainer.api.AppComponentsContainerConfig;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class AppComponentsContainerImpl implements AppComponentsContainer {
 
@@ -22,28 +22,25 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     }
 
     public AppComponentsContainerImpl(Class<?>... initialConfigClasses) throws Exception {
-        List<?> listConfigClasses = Arrays.stream(initialConfigClasses)
-                .sorted(Comparator.comparingInt(configClass ->
-                        configClass.getAnnotation(AppComponentsContainerConfig.class).order()))
-                .collect(Collectors.toList());
-
-        for (var configClass : listConfigClasses) {
-            processConfig((Class<?>) configClass);
-        }
+        orderedProcessConfig(Arrays.asList(initialConfigClasses));
     }
 
     public AppComponentsContainerImpl(String path) throws Exception {
         Reflections reflections = new Reflections(path);
         Set<Class<? extends Object>> configClasses = reflections.getTypesAnnotatedWith(AppComponentsContainerConfig.class);
+        orderedProcessConfig(configClasses);
+    }
 
-        List<?> listConfigClasses = configClasses.stream()
+    private void orderedProcessConfig(Collection<Class<?>> configClasses) throws Exception {
+        List<?> sortedConfigClasses = configClasses.stream()
                 .sorted(Comparator.comparingInt(configClass ->
                         configClass.getAnnotation(AppComponentsContainerConfig.class).order()))
                 .collect(Collectors.toList());
 
-        for (var configClass : listConfigClasses) {
+        for (var configClass : sortedConfigClasses) {
             processConfig((Class<?>) configClass);
         }
+
     }
 
     private void processConfig(Class<?> configClass) throws Exception {
