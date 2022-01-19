@@ -16,11 +16,11 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     private final Map<String, Object> appComponentsByClass = new HashMap<>();
     private final Map<String, Object> appComponentsByInterface = new HashMap<>();
 
-    public AppComponentsContainerImpl(Class<?> initialConfigClass) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchMethodException {
+    public AppComponentsContainerImpl(Class<?> initialConfigClass) throws Exception {
         processConfig(initialConfigClass);
     }
 
-    private void processConfig(Class<?> configClass) throws IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+    private void processConfig(Class<?> configClass) throws Exception {
         checkConfigClass(configClass);
         // You code here...
 
@@ -34,22 +34,34 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         for (Method method : methods) {
             Object component = method.invoke(configObject, getComponentsByTypes(method.getParameterTypes()));
 
-            this.appComponentsByName.put(method.getAnnotation(AppComponent.class).name(), component);
-            this.appComponentsByName.put(component.getClass().getSimpleName(), component);
-            this.appComponentsByName.put(method.getReturnType().getSimpleName(), component);
-
-            if (!method.getReturnType().isInterface()) {
-                for (Class<?> interfaceType : method.getReturnType().getInterfaces()) {
-                    this.appComponentsByName.put(interfaceType.getSimpleName(), component);
-                }
+            if (typeComponentExists(component)) {
+                throw new Exception("Multiple components of the same type");
             }
+
+            this.appComponents.add(component);
+            this.appComponentsByName.put(method.getAnnotation(AppComponent.class).name(), component);
+            this.appComponentsByClass.put(component.getClass().getSimpleName(), component);
+            if (method.getReturnType().isInterface()) {
+                this.appComponentsByInterface.put(method.getReturnType().getSimpleName(), component);
+            }
+
 
         }
     }
 
+    private boolean typeComponentExists(Object component) {
+        for (Object appComponent : appComponents) {
+            if (appComponent.getClass().isAssignableFrom(component.getClass())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private Object[] getComponentsByTypes(Class<?>[] parameterTypes) {
-        return Arrays.stream(parameterTypes).map(parameterType ->
-                this.appComponentsByName.get(parameterType.getSimpleName()))
+        return Arrays.stream(parameterTypes)
+                .map(parameterType ->
+                        this.getAppComponent(parameterType.getSimpleName()))
                 .toArray();
     }
 
@@ -61,11 +73,30 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
     @Override
     public <C> C getAppComponent(Class<C> componentClass) {
-        return (C) this.appComponentsByName.get(componentClass.getSimpleName());
+
+        String className = componentClass.getSimpleName();
+
+        C appComponent = (C) this.appComponentsByClass.get(className);
+
+        if (appComponent == null) {
+            appComponent = (C) this.appComponentsByInterface.get(className);
+        }
+
+        return appComponent;
     }
 
     @Override
     public <C> C getAppComponent(String componentName) {
-        return (C) this.appComponentsByName.get(componentName);
+
+        C appComponent = (C) this.appComponentsByClass.get(componentName);
+
+        if (appComponent == null) {
+            appComponent = (C) this.appComponentsByInterface.get(componentName);
+        }
+        if (appComponent == null) {
+            appComponent = (C) this.appComponentsByName.get(componentName);
+        }
+
+        return appComponent;
     }
 }

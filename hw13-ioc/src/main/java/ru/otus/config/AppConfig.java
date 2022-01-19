@@ -24,7 +24,7 @@ public class AppConfig {
     }
 
     @AppComponent(order = 2, name = "gameProcessor")
-    public GameProcessorImpl gameProcessor(IOService ioService,
+    public GameProcessor gameProcessor(IOService ioService,
                                        PlayerService playerService,
                                        EquationPreparer equationPreparer) {
         return new GameProcessorImpl(ioService, equationPreparer, playerService);
