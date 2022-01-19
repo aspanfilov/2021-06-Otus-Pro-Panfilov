@@ -1,5 +1,6 @@
 package ru.otus.appcontainer;
 
+import org.reflections.Reflections;
 import ru.otus.appcontainer.api.AppComponent;
 import ru.otus.appcontainer.api.AppComponentsContainer;
 import ru.otus.appcontainer.api.AppComponentsContainerConfig;
@@ -18,6 +19,31 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
     public AppComponentsContainerImpl(Class<?> initialConfigClass) throws Exception {
         processConfig(initialConfigClass);
+    }
+
+    public AppComponentsContainerImpl(Class<?>... initialConfigClasses) throws Exception {
+        List<?> listConfigClasses = Arrays.stream(initialConfigClasses)
+                .sorted(Comparator.comparingInt(configClass ->
+                        configClass.getAnnotation(AppComponentsContainerConfig.class).order()))
+                .collect(Collectors.toList());
+
+        for (var configClass : listConfigClasses) {
+            processConfig((Class<?>) configClass);
+        }
+    }
+
+    public AppComponentsContainerImpl(String path) throws Exception {
+        Reflections reflections = new Reflections(path);
+        Set<Class<? extends Object>> configClasses = reflections.getTypesAnnotatedWith(AppComponentsContainerConfig.class);
+
+        List<?> listConfigClasses = configClasses.stream()
+                .sorted(Comparator.comparingInt(configClass ->
+                        configClass.getAnnotation(AppComponentsContainerConfig.class).order()))
+                .collect(Collectors.toList());
+
+        for (var configClass : listConfigClasses) {
+            processConfig((Class<?>) configClass);
+        }
     }
 
     private void processConfig(Class<?> configClass) throws Exception {
