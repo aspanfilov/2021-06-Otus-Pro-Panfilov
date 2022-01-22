@@ -22,7 +22,7 @@ public interface Versions {
     String jetty = "11.0.6";
     String freemarker = "2.3.31";
 
-    String reflections = "0.9.12";
+    String reflections = "0.9.11";
 
     String sockjs = "1.1.2";
     String stomp = "2.3.3-1";
@@ -30,6 +30,4 @@ public interface Versions {
     String swagger = "3.0.0";
 
     String jsr305 = "3.0.2";
-
-    String grpc = "1.42.0";
 }
