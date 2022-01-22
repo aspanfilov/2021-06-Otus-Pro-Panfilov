@@ -6,16 +6,14 @@ import ru.otus.appcontainer.api.AppComponentsContainer;
 import ru.otus.appcontainer.api.AppComponentsContainerConfig;
 
 import java.lang.reflect.Method;
+import java.sql.Array;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class AppComponentsContainerImpl implements AppComponentsContainer {
 
     private final List<Object> appComponents = new ArrayList<>();
     private final Map<String, Object> appComponentsByName = new HashMap<>();
-    private final Map<String, Object> appComponentsByClass = new HashMap<>();
-    private final Map<String, Object> appComponentsByInterface = new HashMap<>();
 
     public AppComponentsContainerImpl(Class<?> initialConfigClass) throws Exception {
         processConfig(initialConfigClass);
@@ -49,77 +47,78 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
         Object configObject = configClass.getConstructor().newInstance();
 
-        List<Method> methods = Arrays.stream(configClass.getDeclaredMethods())
+        List<Method> configMethods = Arrays.stream(configClass.getDeclaredMethods())
                 .filter(method -> method.isAnnotationPresent(AppComponent.class))
                 .sorted(Comparator.comparingInt(method -> method.getAnnotation(AppComponent.class).order()))
                 .collect(Collectors.toList());
 
-        for (Method method : methods) {
-            Object component = method.invoke(configObject, getComponentsByTypes(method.getParameterTypes()));
-
-            if (typeComponentExists(component)) {
-                throw new Exception("Multiple components of the same type");
+        for (Method configMethod : configMethods) {
+            if (!isAppComponentNameFree(configMethod.getAnnotation(AppComponent.class).name())) {
+                throw new Exception("Multiple components of the same name");
             }
+            Object appComponent = configMethod.invoke(configObject, getAppComponentsByTypes(configMethod.getParameterTypes()));
 
-            this.appComponents.add(component);
-            this.appComponentsByName.put(method.getAnnotation(AppComponent.class).name(), component);
-            this.appComponentsByClass.put(component.getClass().getSimpleName(), component);
-            if (method.getReturnType().isInterface()) {
-                this.appComponentsByInterface.put(method.getReturnType().getSimpleName(), component);
-            }
-
-
+            this.appComponents.add(appComponent);
+            this.appComponentsByName.put(configMethod.getAnnotation(AppComponent.class).name(), appComponent);
         }
     }
 
-    private boolean typeComponentExists(Object component) {
-        for (Object appComponent : appComponents) {
-            if (appComponent.getClass().isAssignableFrom(component.getClass())) {
-                return true;
+
+    @Override
+    public <C> C getAppComponent(Class<C> componentClass) throws Exception {
+
+        C appComponent = null;
+
+        for (Object nextComponent : appComponents) {
+            if (componentClass.isAssignableFrom(nextComponent.getClass())) {
+                if (appComponent == null) {
+                    appComponent = (C) nextComponent;
+                } else {
+                    throw new Exception("Multiple components of the same type");
+//                    return null;
+                }
             }
         }
-        return false;
+
+        if (appComponent == null) {
+            throw new Exception("Component not found");
+//            return null;
+        } else {
+            return appComponent;
+        }
     }
 
-    private Object[] getComponentsByTypes(Class<?>[] parameterTypes) {
-        return Arrays.stream(parameterTypes)
-                .map(parameterType ->
-                        this.getAppComponent(parameterType.getSimpleName()))
-                .toArray();
+    @Override
+    public <C> C getAppComponent(String componentName) throws Exception {
+
+        C appComponent = this.getAppComponentByName(componentName);
+        if (appComponent == null) {
+            throw new Exception("Component not found");
+        }
+        return appComponent;
+
+    }
+
+
+    private Object[] getAppComponentsByTypes(Class<?>[] parameterTypes) throws Exception {
+        List<Object> appComponents = new ArrayList<>();
+
+        for (Class<?> parameterType : parameterTypes) {
+            appComponents.add(this.getAppComponent(parameterType));
+        }
+        return appComponents.toArray();
+    }
+
+    private <C> C getAppComponentByName(String name) {
+        return (C) this.appComponentsByName.get(name);
+    }
+    private boolean isAppComponentNameFree(String name) {
+        return this.getAppComponentByName(name) == null;
     }
 
     private void checkConfigClass(Class<?> configClass) {
         if (!configClass.isAnnotationPresent(AppComponentsContainerConfig.class)) {
             throw new IllegalArgumentException(String.format("Given class is not config %s", configClass.getName()));
         }
-    }
-
-    @Override
-    public <C> C getAppComponent(Class<C> componentClass) {
-
-        String className = componentClass.getSimpleName();
-
-        C appComponent = (C) this.appComponentsByClass.get(className);
-
-        if (appComponent == null) {
-            appComponent = (C) this.appComponentsByInterface.get(className);
-        }
-
-        return appComponent;
-    }
-
-    @Override
-    public <C> C getAppComponent(String componentName) {
-
-        C appComponent = (C) this.appComponentsByClass.get(componentName);
-
-        if (appComponent == null) {
-            appComponent = (C) this.appComponentsByInterface.get(componentName);
-        }
-        if (appComponent == null) {
-            appComponent = (C) this.appComponentsByName.get(componentName);
-        }
-
-        return appComponent;
     }
 }
