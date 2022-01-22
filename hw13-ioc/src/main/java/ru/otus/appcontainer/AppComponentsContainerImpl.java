@@ -6,7 +6,6 @@ import ru.otus.appcontainer.api.AppComponentsContainer;
 import ru.otus.appcontainer.api.AppComponentsContainerConfig;
 
 import java.lang.reflect.Method;
-import java.sql.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -53,13 +52,14 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
                 .collect(Collectors.toList());
 
         for (Method configMethod : configMethods) {
-            if (!isAppComponentNameFree(configMethod.getAnnotation(AppComponent.class).name())) {
-                throw new Exception("Multiple components of the same name");
+            String appComponentName = configMethod.getAnnotation(AppComponent.class).name();
+            if (!isAppComponentNameFree(appComponentName)) {
+                throw new Exception(String.format("Multiple components of the same name %s", appComponentName));
             }
             Object appComponent = configMethod.invoke(configObject, getAppComponentsByTypes(configMethod.getParameterTypes()));
 
             this.appComponents.add(appComponent);
-            this.appComponentsByName.put(configMethod.getAnnotation(AppComponent.class).name(), appComponent);
+            this.appComponentsByName.put(appComponentName, appComponent);
         }
     }
 
@@ -74,13 +74,13 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
                 if (appComponent == null) {
                     appComponent = (C) nextComponent;
                 } else {
-                    throw new Exception("Multiple components of the same type");
+                    throw new Exception(String.format("Multiple components of the same type %s", componentClass.getName()));
                 }
             }
         }
 
         if (appComponent == null) {
-            throw new Exception("Component not found");
+            throw new Exception(String.format("Component not found %s", componentClass.getName()));
         } else {
             return appComponent;
         }
