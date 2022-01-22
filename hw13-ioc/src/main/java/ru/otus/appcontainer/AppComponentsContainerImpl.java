@@ -75,14 +75,12 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
                     appComponent = (C) nextComponent;
                 } else {
                     throw new Exception("Multiple components of the same type");
-//                    return null;
                 }
             }
         }
 
         if (appComponent == null) {
             throw new Exception("Component not found");
-//            return null;
         } else {
             return appComponent;
         }
